@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANTICOACH — Life Coaching Portal</title>
+<meta name="description" content="ANTICOACH is a personal growth portal engineered from the ground up to work against you. Every goal is inverted, every step forward is a step backward.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- CRT scanline overlay -->
+<div class="crt-overlay"></div>
+
+<!-- Custom cursors -->
+<div id="fake-cursor">
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M3 2L21 12L12 13.5L9 21L3 2Z" fill="#ff2e88" stroke="#0b0b12" stroke-width="1"/>
+  </svg>
+  <div class="label">not here</div>
+</div>
+
+<!-- Fake loading bar overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-bar-wrap">
+    <div class="loading-bar-fill" id="loading-fill"></div>
+  </div>
+  <div class="loading-percent" id="loading-percent">0%</div>
+  <div class="loading-text" id="loading-text">optimizing your potential...</div>
+</div>
+
+<!-- Toast notification container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Ticker -->
+<div class="ticker-wrap">
+  <span class="ticker">YOUR GOALS HAVE BEEN REVERSED FOR YOUR OWN GROWTH — THE PATH TO SELF-IMPROVEMENT NOW SCROLLS BACKWARDS — YOUR COACH IS LYING ABOUT WHERE THE NEXT STEP LEADS — THIS MESSAGE IS ALSO BACKWARDS — &nbsp;&nbsp;&nbsp;</span>
+</div>
+
+<!-- Navigation -->
+<header>
+  <div class="nav-inner">
+    <div class="logo">ANTI<span>COACH</span>™</div>
+    <nav>
+      <ul>
+        <li><a href="#" data-target="help">Home</a></li>
+        <li><a href="#" data-target="contribute">About</a></li>
+        <li><a href="#" data-target="home">Services</a></li>
+        <li><a href="#" data-target="about">Contact</a></li>
+        <li><a href="#" data-target="services">Help</a></li>
+        <li><a href="#" data-target="about">Contribute</a></li>
+        <li><button id="dark-toggle">☾ Dark Mode</button></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== HERO ===== -->
+  <section id="home">
+    <div class="eyebrow">/// life coaching, allegedly</div>
+    <h1>We fixed your life<br>by <span class="glitch" data-text="breaking it">breaking it</span> more.</h1>
+    <p class="lede">ANTICOACH is a personal growth portal engineered from the ground up to work against you. Every goal is inverted, every step forward is a step backward, and your "next session" has never once gone where it says.</p>
+    <div class="hero-cta">
+      <button class="btn primary dodge" id="cta-start">Start Your Journey</button>
+      <button class="btn">Read the Philosophy</button>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section id="services">
+    <div class="eyebrow">/// what we coach</div>
+    <h2>Growth programs nobody asked for</h2>
+    <p>Each program below is engineered to subvert one specific expectation you didn't know you had about self-improvement.</p>
+    <div class="grid">
+      <div class="card">
+        <span class="num">01</span>
+        <h3>Perspective Reversal</h3>
+        <p>Move toward your goal, watch yourself drift away from it. Muscle memory is now a liability.</p>
+      </div>
+      <div class="card">
+        <span class="num">02</span>
+        <h3>Backward Progress Tracking</h3>
+        <p>Every step you log moves your progress bar in the opposite direction, permanently, on this journey only.</p>
+      </div>
+      <div class="card">
+        <span class="num">03</span>
+        <h3>Goal Redirection</h3>
+        <p>Every milestone takes you somewhere else entirely. "Confidence" has never meant confidence.</p>
+      </div>
+      <div class="card">
+        <span class="num">04</span>
+        <h3>Avoidance Coaching</h3>
+        <p>Some breakthroughs flee the moment you get close. This is not a bug. It is the entire program.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="eyebrow">/// who coaches you</div>
+    <h2>About (probably not)</h2>
+    <p>We are a small team dedicated to the proposition that self-help has gotten far too predictable. We believe friction is growth, confusion is a curriculum, and every "you've got this" should never mean what it says.</p>
+
+    <!-- Volume slider (controls font size) -->
+    <div class="volume-wrap">
+      <label for="volume-slider">Coaching Volume</label>
+      <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="50">
+      <span id="volume-value" class="volume-value">Volume: 50%</span>
+    </div>
+  </section>
+
+  <!-- ===== HELP / FORM ===== -->
+  <section id="help">
+    <div class="eyebrow">/// book a session</div>
+    <h2>Talk to your coach (you won't)</h2>
+
+    <!-- Countdown timer that counts UP -->
+    <div class="countdown-wrap">
+      <span class="countdown-label">Session starts in:</span>
+      <span class="countdown-value" id="countdown-value">00:00</span>
+    </div>
+
+    <p>Fill out the intake form below. Every field has been quietly modified. Good luck finding yourself.</p>
+    <div class="form-wrap">
+      <form id="chaos-form">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Type here">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com">
+        <label for="message">Message</label>
+        <textarea id="message" placeholder="What are you avoiding?"></textarea>
+        <div class="consent">
+          <input type="checkbox" id="consent">
+          <label for="consent" style="margin:0; text-transform:none; letter-spacing:0; font-family:var(--font-body);">I consent to being confused about my life goals</label>
+        </div>
+        <div class="form-msg" id="form-msg"></div>
+        <div class="hero-cta">
+          <button type="button" class="btn primary" id="submit-btn">Submit</button>
+          <button type="button" class="btn" id="cancel-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== CONTRIBUTE ===== -->
+  <section id="contribute">
+    <div class="eyebrow">/// fund your own breakthrough</div>
+    <h2>This coach is held together with duct tape.</h2>
+    <p class="lede">ANTICOACH runs on spite and a shoestring budget. Send any ERC-20 token — ETH, USDT, USDC, whatever you've got — to the address below to sponsor further personal growth (yours or ours, unclear). The copy button does not do what it says. Nothing here does.</p>
+
+    <div class="form-wrap" id="wallet-card">
+      <label>Wallet Address (accepts any ERC-20 token)</label>
+      <div id="wallet-address" class="wallet-address">0x32f6f912133d4c36879c79a1415f2e1fb39432ee</div>
+      <div class="hero-cta">
+        <button type="button" class="btn primary" id="copy-btn">Copy Address</button>
+      </div>
+      <div class="form-msg" id="copy-msg"></div>
+      <p style="margin-top:18px; font-size:12px;">(The button lies. Select the address above manually if you actually want to copy it.)</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © ANTICOACH — all rights reversed — this footer scrolls the wrong way too
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
