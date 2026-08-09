@@ -3,19 +3,132 @@
    Chaos module system + Crowdfunded UX Repairs (Bounty System).
 ============================================================ */
 
-/* ---------- BOUNTY MANAGER ---------- */
-const bountyData = {
-  invertedCursor: { title: "Fix Inverted Mouse Cursor", target: 50, initial: 35, desc: "Restores normal 1:1 mouse movement so moving right moves right." },
-  reverseScroll: { title: "Fix Reverse Page Scroll", target: 35, initial: 20, desc: "Restores standard scroll direction." },
-  evasiveButton: { title: "Fix Evasive CTA Button", target: 25, initial: 15, desc: "Stops the 'Start Your Journey' button from running away." },
-  formSabotage: { title: "Fix Intake Form Sabotage", target: 40, initial: 10, desc: "Allows live typing without text reversal and lets form submit." },
-  lyingCopyButton: { title: "Fix Wallet Copy Button", target: 15, initial: 15, desc: "Makes 'Copy Address' copy the real ERC-20 wallet address." },
-  textScramble: { title: "Fix Text Hover Scramble", target: 20, initial: 5, desc: "Stops text from scrambling into glyphs when hovered." },
-  fakeToasts: { title: "Fix Annoying Popup Toasts", target: 30, initial: 12, desc: "Mutes random snarky popup notifications." },
-  darkModeToggle: { title: "Fix Dark Mode Toggle", target: 15, initial: 8, desc: "Turns Dark Mode into a clean, working theme switcher." },
-  emailCorruption: { title: "Fix Email Field Corruption", target: 20, initial: 0, desc: "Prevents email field text corruption and fake domains." },
-  countUpTimer: { title: "Fix Session Countdown", target: 10, initial: 10, desc: "Fixes session timer to display clean status." },
-  volumeSlider: { title: "Fix Coaching Volume Slider", target: 10, initial: 2, desc: "Prevents volume slider from warping site font size." }
+/* ---------- BOUNTY CONFIG (Life Struggles Mapping) ---------- */
+/*
+  Each entry maps a website chaos module to a real-life struggle.
+  Edit this config to update issues, targets, and descriptions.
+  The website gets cleaner as life gets better.
+*/
+const bountyConfig = [
+  {
+    id: 'invertedCursor',
+    bugTitle: 'Inverted Mouse Cursor',
+    lifeIssue: 'Family Emergency Fund',
+    lifeDesc: 'Critical family situation requiring emergency financial support. This is the most urgent and important thing in my life right now.',
+    priority: 'CRITICAL',
+    targetUSDT: 30000,
+    initialUSDT: 0
+  },
+  {
+    id: 'reverseScroll',
+    bugTitle: 'Reverse Page Scroll',
+    lifeIssue: 'Outstanding Debt & Bills',
+    lifeDesc: 'Accumulated debt and overdue bills that keep piling up — just like this page scrolls the wrong way, my finances move backwards.',
+    priority: 'CRITICAL',
+    targetUSDT: 5000,
+    initialUSDT: 0
+  },
+  {
+    id: 'formSabotage',
+    bugTitle: 'Form Input Sabotage',
+    lifeIssue: 'Laptop/PC Upgrade for Work',
+    lifeDesc: 'My current setup sabotages my productivity the same way this form sabotages your input. Need a proper workstation to build a future.',
+    priority: 'HIGH',
+    targetUSDT: 2000,
+    initialUSDT: 0
+  },
+  {
+    id: 'evasiveButton',
+    bugTitle: 'Evasive CTA Button',
+    lifeIssue: 'Online Course & Education',
+    lifeDesc: 'Opportunities keep running away from me like this button runs from your cursor. Investing in education to catch them.',
+    priority: 'HIGH',
+    targetUSDT: 1500,
+    initialUSDT: 0
+  },
+  {
+    id: 'fakeToasts',
+    bugTitle: 'Annoying Popup Toasts',
+    lifeIssue: 'Health Insurance & Medical',
+    lifeDesc: 'Unexpected health concerns pop up like these annoying notifications — need proper coverage to handle them.',
+    priority: 'MEDIUM',
+    targetUSDT: 1200,
+    initialUSDT: 0
+  },
+  {
+    id: 'darkModeToggle',
+    bugTitle: 'Broken Dark Mode Toggle',
+    lifeIssue: 'PlayStation 5 (Mental Health & Fun)',
+    lifeDesc: 'Life needs a break sometimes. A PS5 for unwinding and mental reset — because even dark mode should work properly.',
+    priority: 'MEDIUM',
+    targetUSDT: 1000,
+    initialUSDT: 0
+  },
+  {
+    id: 'emailCorruption',
+    bugTitle: 'Email Field Corruption',
+    lifeIssue: 'Proper Domain & Hosting',
+    lifeDesc: 'My online presence is as corrupted as this email field. Need proper hosting and a real domain to build credibility.',
+    priority: 'LOW',
+    targetUSDT: 500,
+    initialUSDT: 0
+  },
+  {
+    id: 'textScramble',
+    bugTitle: 'Text Hover Scramble',
+    lifeIssue: 'GoPro for Content Creation',
+    lifeDesc: 'Want to create content but everything I try to capture comes out scrambled. A GoPro would help me tell my story clearly.',
+    priority: 'LOW',
+    targetUSDT: 400,
+    initialUSDT: 0
+  },
+  {
+    id: 'lyingCopyButton',
+    bugTitle: 'Lying Copy Button',
+    lifeIssue: 'Quality Microphone for Content',
+    lifeDesc: 'My voice deserves to be heard clearly, not copied wrong. A quality mic for podcasts and content creation.',
+    priority: 'LOW',
+    targetUSDT: 250,
+    initialUSDT: 0
+  },
+  {
+    id: 'countUpTimer',
+    bugTitle: 'Countdown Timer Counts Up',
+    lifeIssue: 'Monthly Groceries & Food Fund',
+    lifeDesc: 'Time keeps ticking and the fridge keeps emptying. This fund helps keep food on the table.',
+    priority: 'LOW',
+    targetUSDT: 200,
+    initialUSDT: 0
+  },
+  {
+    id: 'volumeSlider',
+    bugTitle: 'Volume Slider Warps Font',
+    lifeIssue: 'Streaming Subscription Bundle',
+    lifeDesc: 'Small comfort that keeps the volume of life manageable. Netflix, Spotify, the basics.',
+    priority: 'LOW',
+    targetUSDT: 100,
+    initialUSDT: 0
+  }
+];
+
+// Build lookup map from config
+const bountyData = {};
+bountyConfig.forEach(item => {
+  bountyData[item.id] = {
+    title: item.bugTitle,
+    lifeIssue: item.lifeIssue,
+    lifeDesc: item.lifeDesc,
+    priority: item.priority,
+    target: item.targetUSDT,
+    initial: item.initialUSDT
+  };
+});
+
+const priorityMeta = {
+  CRITICAL: { emoji: '🔴', color: 'var(--magenta)', label: 'CRITICAL' },
+  HIGH:     { emoji: '🟡', color: 'var(--yellow)',  label: 'HIGH' },
+  MEDIUM:   { emoji: '🟡', color: 'var(--yellow)',  label: 'MEDIUM' },
+  LOW:      { emoji: '🟢', color: 'var(--cyan)',    label: 'LOW' }
 };
 
 function getSavedFunds() {
@@ -58,6 +171,11 @@ function resetAllBounties() {
   renderBountyUI();
 }
 
+function formatUSDT(val) {
+  if (val >= 1000) return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return '$' + val.toFixed(2);
+}
+
 function renderBountyUI() {
   const grid = document.getElementById('bounty-grid');
   const totalRaisedEl = document.getElementById('total-raised-usdt');
@@ -67,9 +185,9 @@ function renderBountyUI() {
   grid.innerHTML = '';
   let totalRaised = 0;
   let solvedCount = 0;
-  const keys = Object.keys(bountyData);
 
-  keys.forEach(id => {
+  bountyConfig.forEach(cfg => {
+    const id = cfg.id;
     const item = bountyData[id];
     const funds = getFunds(id);
     totalRaised += funds;
@@ -77,25 +195,30 @@ function renderBountyUI() {
     if (fixed) solvedCount++;
 
     const percent = Math.min(100, Math.floor((funds / item.target) * 100));
+    const pm = priorityMeta[item.priority] || priorityMeta.LOW;
 
     const card = document.createElement('div');
-    card.className = `bounty-card ${fixed ? 'fixed' : ''}`;
+    card.className = `bounty-card ${fixed ? 'fixed' : ''} priority-${item.priority.toLowerCase()}`;
     card.innerHTML = `
       <div>
         <div class="bounty-card-header">
-          <h3>${item.title}</h3>
+          <div>
+            <span class="bounty-priority" style="color: ${pm.color}">${pm.emoji} ${pm.label}</span>
+            <h3>${item.lifeIssue}</h3>
+          </div>
           <span class="bounty-status ${fixed ? 'repaired' : 'broken'}">
-            ${fixed ? '✓ REPAIRED' : '⚠ BROKEN'}
+            ${fixed ? '✓ FIXED' : '⚠ STRUGGLING'}
           </span>
         </div>
-        <p class="bounty-desc">${item.desc}</p>
+        <p class="bounty-desc">${item.lifeDesc}</p>
+        <p class="bounty-bug-label">🔧 Website Bug: <em>${item.title}</em></p>
       </div>
 
       <div>
         <div class="bounty-progress-wrap">
           <div class="bounty-progress-text">
             <span>Funding Progress</span>
-            <span>$${funds.toFixed(2)} / $${item.target.toFixed(2)} USDT (${percent}%)</span>
+            <span>${formatUSDT(funds)} / ${formatUSDT(item.target)} USDT (${percent}%)</span>
           </div>
           <div class="bounty-progress-bar">
             <div class="bounty-progress-fill" style="width: ${percent}%"></div>
@@ -103,8 +226,8 @@ function renderBountyUI() {
         </div>
 
         <div class="bounty-actions">
-          ${fixed ? 
-            `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>Fully Funded</button>` :
+          ${fixed ?
+            `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Life Issue Resolved</button>` :
             `<button class="btn btn-simulate" data-simulate="${id}">+ $10 USDT (Simulate)</button>`
           }
         </div>
@@ -114,8 +237,8 @@ function renderBountyUI() {
     grid.appendChild(card);
   });
 
-  if (totalRaisedEl) totalRaisedEl.textContent = `$${totalRaised.toFixed(2)} USDT`;
-  if (solvedCountEl) solvedCountEl.textContent = `${solvedCount} / ${keys.length}`;
+  if (totalRaisedEl) totalRaisedEl.textContent = `${formatUSDT(totalRaised)} USDT`;
+  if (solvedCountEl) solvedCountEl.textContent = `${solvedCount} / ${bountyConfig.length}`;
 
   grid.querySelectorAll('[data-simulate]').forEach(btn => {
     btn.addEventListener('click', (e) => {

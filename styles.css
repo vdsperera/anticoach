@@ -734,15 +734,32 @@ body.ultra-dark header{
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 22px;
+  padding-left: 26px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   transition: border-color 0.3s, box-shadow 0.3s;
+  border-left: 4px solid var(--line);
+}
+
+/* Priority left-border colors */
+.bounty-card.priority-critical {
+  border-left-color: var(--magenta);
+}
+.bounty-card.priority-high {
+  border-left-color: var(--yellow);
+}
+.bounty-card.priority-medium {
+  border-left-color: var(--yellow);
+}
+.bounty-card.priority-low {
+  border-left-color: var(--cyan);
 }
 
 .bounty-card.fixed {
   border-color: var(--cyan);
+  border-left-color: var(--cyan);
   box-shadow: 0 0 16px rgba(0,240,255,0.15);
 }
 
@@ -754,11 +771,21 @@ body.ultra-dark header{
   margin-bottom: 10px;
 }
 
+.bounty-priority {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
 .bounty-card h3 {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 16px;
   margin: 0;
   color: var(--ink);
+  line-height: 1.3;
 }
 
 .bounty-status {
@@ -769,6 +796,7 @@ body.ultra-dark header{
   border-radius: 4px;
   text-transform: uppercase;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .bounty-status.broken {
@@ -787,8 +815,21 @@ body.ultra-dark header{
 .bounty-desc {
   font-size: 13px;
   color: var(--muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.bounty-bug-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--muted);
+  opacity: 0.7;
   margin-bottom: 16px;
-  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+.bounty-bug-label em {
+  color: var(--yellow);
+  font-style: normal;
 }
 
 .bounty-progress-wrap {
@@ -839,5 +880,24 @@ body.ultra-dark header{
 
 .btn-simulate:hover {
   background: rgba(0,240,255,0.15);
+}
+
+/* ============ NARRATIVE CALLOUT ============ */
+.narrative-callout {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--magenta);
+  border-radius: 12px;
+  padding: 22px 26px;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  max-width: 720px;
+}
+.narrative-callout p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: none;
+  margin: 0;
 }
 
