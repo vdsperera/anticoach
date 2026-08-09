@@ -901,3 +901,81 @@ body.ultra-dark header{
   margin: 0;
 }
 
+/* ============ WEB3 DONATION MODAL ============ */
+.donation-modal {
+  width: min(90vw, 440px);
+  text-align: left;
+  position: relative;
+  padding: 34px 28px 28px;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 24px;
+  line-height: 1;
+  cursor: none;
+  transition: color 0.2s;
+}
+.modal-close-btn:hover {
+  color: var(--magenta);
+}
+
+.donation-amount-wrap {
+  margin-top: 10px;
+}
+
+.preset-amounts {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.preset-btn {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 13px;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--void);
+  color: var(--ink);
+  cursor: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.preset-btn:hover,
+.preset-btn.active {
+  background: rgba(0,240,255,0.15);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+#custom-donation-amount {
+  width: 100%;
+  background: var(--void);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+}
+
+.btn-donate-card {
+  font-size: 11px;
+  padding: 8px 14px;
+  background: var(--magenta);
+  border-color: var(--magenta);
+  color: var(--void);
+  font-weight: bold;
+}
+.btn-donate-card:hover {
+  box-shadow: 0 0 12px rgba(255,46,136,0.4);
+}
+
+

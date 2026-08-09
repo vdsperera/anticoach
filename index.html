@@ -6,6 +6,7 @@
 <title>ANTICOACH — Life Coaching Portal</title>
 <meta name="description" content="ANTICOACH is a personal growth portal engineered from the ground up to work against you. Every goal is inverted, every step forward is a step backward.">
 <link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
 </head>
 <body>
 
@@ -191,6 +192,51 @@
   </section>
 
 </main>
+
+<!-- Web3 Donation Modal -->
+<div class="modal-backdrop donation-modal-backdrop" id="donation-modal" style="display:none;">
+  <div class="modal donation-modal">
+    <button class="modal-close-btn" id="donation-modal-close" type="button">&times;</button>
+    <div class="eyebrow" id="donation-modal-priority">/// CRITICAL</div>
+    <h3 id="donation-modal-title" style="margin-bottom:8px; font-size:18px;">Donate to Fix: Issue Title</h3>
+    <p id="donation-modal-desc" style="font-size:13px; color:var(--muted); margin-bottom:18px; line-height:1.45;"></p>
+
+    <!-- Amount Selection -->
+    <div class="donation-amount-wrap">
+      <label style="margin-bottom:8px;">Select Donation Amount (USDT)</label>
+      <div class="preset-amounts">
+        <button type="button" class="preset-btn" data-amount="10">$10</button>
+        <button type="button" class="preset-btn active" data-amount="25">$25</button>
+        <button type="button" class="preset-btn" data-amount="50">$50</button>
+        <button type="button" class="preset-btn" data-amount="100">$100</button>
+      </div>
+      <input type="number" id="custom-donation-amount" placeholder="Or enter custom amount in USDT" value="25" min="1" step="1">
+    </div>
+
+    <!-- Actions -->
+    <div class="donation-modal-actions" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+      <button type="button" class="btn primary btn-web3-pay" id="btn-web3-connect-pay" style="width:100%;">
+        💎 Pay with Web3 Wallet (MetaMask / EVM)
+      </button>
+      <button type="button" class="btn btn-show-qr" id="btn-toggle-qr" style="width:100%;">
+        📱 Show QR Code & Address
+      </button>
+    </div>
+
+    <!-- QR / Manual Pay Sub-Panel -->
+    <div class="qr-panel" id="qr-panel" style="display:none; margin-top:18px; border-top:1px dashed var(--line); padding-top:16px;">
+      <label style="margin-bottom:6px;">Wallet Address (ERC-20 USDT / ETH)</label>
+      <div class="wallet-address-modal" id="modal-wallet-address" style="font-family:var(--font-display); font-size:12px; background:var(--void); border:1px solid var(--line); border-radius:8px; padding:10px; word-break:break-all; color:var(--cyan);">0x32f6f912133d4c36879c79a1415f2e1fb39432ee</div>
+      <div style="margin-top:14px; text-align:center;">
+        <img id="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=0x32f6f912133d4c36879c79a1415f2e1fb39432ee" alt="Wallet QR Code" style="border-radius:8px; border:1px solid var(--line); width:150px; height:150px;">
+      </div>
+      <button type="button" class="btn" id="modal-copy-address-btn" style="margin-top:12px; width:100%; font-size:12px;">Copy Wallet Address</button>
+    </div>
+
+    <!-- Feedback message -->
+    <div class="donation-msg" id="donation-msg" style="margin-top:14px; font-family:var(--font-display); font-size:12px; min-height:18px;"></div>
+  </div>
+</div>
 
 <footer>
   © ANTICOACH — all rights reversed — this footer scrolls the wrong way too
