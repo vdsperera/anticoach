@@ -49,6 +49,9 @@ If you managed to make this more complicated than that, you may already be an AN
 | Email Field | Accepts your email | Corrupts it after you stop typing |
 | Tab Order | Normal tab navigation | Reversed. Good luck with the form. |
 
+### Crowdfunded UX Repairs (Bounties)
+Want sane web standards back? Every broken interaction has a community USDT bounty target. Send USDT (or click "+$10 USDT Simulate" to test). Once a feature hits 100% funding, the bug automatically patches itself for everyone in real-time!
+
 ### Visual Polish
 - **Glitch effect** on hero text with periodic intense bursts
 - **CRT scanline overlay** for that broken-TV aesthetic

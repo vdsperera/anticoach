@@ -48,6 +48,7 @@
         <li><a href="#" data-target="home">Services</a></li>
         <li><a href="#" data-target="about">Contact</a></li>
         <li><a href="#" data-target="services">Help</a></li>
+        <li><a href="#" data-target="bounties">Pay-to-Fix</a></li>
         <li><a href="#" data-target="about">Contribute</a></li>
         <li><button id="dark-toggle">☾ Dark Mode</button></li>
       </ul>
@@ -141,6 +142,29 @@
           <button type="button" class="btn" id="cancel-btn">Cancel</button>
         </div>
       </form>
+    </div>
+  <!-- ===== CROWDFUNDED REPAIRS ===== -->
+  <section id="bounties">
+    <div class="eyebrow">/// crowdfunded ux repairs</div>
+    <h2>Pay to Fix the Portal (USDT Bounties)</h2>
+    <p class="lede">Tired of the chaos? Each broken interaction has a community USDT goal. Send USDT to fund a fix — once target is reached, that bug automatically patches itself for everyone!</p>
+
+    <div class="bounty-stats-bar">
+      <div class="bounty-stat">
+        <span class="stat-label">Total Raised:</span>
+        <span class="stat-value" id="total-raised-usdt">$0.00 USDT</span>
+      </div>
+      <div class="bounty-stat">
+        <span class="stat-label">Bounties Solved:</span>
+        <span class="stat-value" id="bounties-solved-count">0 / 11</span>
+      </div>
+      <div class="bounty-stat">
+        <button type="button" class="btn" id="reset-bounties-btn">Reset All Bounties</button>
+      </div>
+    </div>
+
+    <div class="bounty-grid" id="bounty-grid">
+      <!-- Bounty cards rendered dynamically via script.js -->
     </div>
   </section>
 

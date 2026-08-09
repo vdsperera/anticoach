@@ -1,7 +1,131 @@
 /* ============================================================
    ANTICOACH — script.js
-   Chaos module system. Every prank is self-contained.
+   Chaos module system + Crowdfunded UX Repairs (Bounty System).
 ============================================================ */
+
+/* ---------- BOUNTY MANAGER ---------- */
+const bountyData = {
+  invertedCursor: { title: "Fix Inverted Mouse Cursor", target: 50, initial: 35, desc: "Restores normal 1:1 mouse movement so moving right moves right." },
+  reverseScroll: { title: "Fix Reverse Page Scroll", target: 35, initial: 20, desc: "Restores standard scroll direction." },
+  evasiveButton: { title: "Fix Evasive CTA Button", target: 25, initial: 15, desc: "Stops the 'Start Your Journey' button from running away." },
+  formSabotage: { title: "Fix Intake Form Sabotage", target: 40, initial: 10, desc: "Allows live typing without text reversal and lets form submit." },
+  lyingCopyButton: { title: "Fix Wallet Copy Button", target: 15, initial: 15, desc: "Makes 'Copy Address' copy the real ERC-20 wallet address." },
+  textScramble: { title: "Fix Text Hover Scramble", target: 20, initial: 5, desc: "Stops text from scrambling into glyphs when hovered." },
+  fakeToasts: { title: "Fix Annoying Popup Toasts", target: 30, initial: 12, desc: "Mutes random snarky popup notifications." },
+  darkModeToggle: { title: "Fix Dark Mode Toggle", target: 15, initial: 8, desc: "Turns Dark Mode into a clean, working theme switcher." },
+  emailCorruption: { title: "Fix Email Field Corruption", target: 20, initial: 0, desc: "Prevents email field text corruption and fake domains." },
+  countUpTimer: { title: "Fix Session Countdown", target: 10, initial: 10, desc: "Fixes session timer to display clean status." },
+  volumeSlider: { title: "Fix Coaching Volume Slider", target: 10, initial: 2, desc: "Prevents volume slider from warping site font size." }
+};
+
+function getSavedFunds() {
+  try {
+    return JSON.parse(localStorage.getItem('anticoach_bounty_funds')) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveFunds(funds) {
+  try {
+    localStorage.setItem('anticoach_bounty_funds', JSON.stringify(funds));
+  } catch (e) {}
+}
+
+function getFunds(id) {
+  const saved = getSavedFunds();
+  if (saved[id] !== undefined) return saved[id];
+  return bountyData[id] ? bountyData[id].initial : 0;
+}
+
+function isFixed(id) {
+  if (!bountyData[id]) return false;
+  return getFunds(id) >= bountyData[id].target;
+}
+
+function addFunds(id, amount) {
+  if (!bountyData[id]) return;
+  const current = getFunds(id);
+  const updated = Math.min(bountyData[id].target, current + amount);
+  const saved = getSavedFunds();
+  saved[id] = updated;
+  saveFunds(saved);
+  renderBountyUI();
+}
+
+function resetAllBounties() {
+  localStorage.removeItem('anticoach_bounty_funds');
+  renderBountyUI();
+}
+
+function renderBountyUI() {
+  const grid = document.getElementById('bounty-grid');
+  const totalRaisedEl = document.getElementById('total-raised-usdt');
+  const solvedCountEl = document.getElementById('bounties-solved-count');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  let totalRaised = 0;
+  let solvedCount = 0;
+  const keys = Object.keys(bountyData);
+
+  keys.forEach(id => {
+    const item = bountyData[id];
+    const funds = getFunds(id);
+    totalRaised += funds;
+    const fixed = funds >= item.target;
+    if (fixed) solvedCount++;
+
+    const percent = Math.min(100, Math.floor((funds / item.target) * 100));
+
+    const card = document.createElement('div');
+    card.className = `bounty-card ${fixed ? 'fixed' : ''}`;
+    card.innerHTML = `
+      <div>
+        <div class="bounty-card-header">
+          <h3>${item.title}</h3>
+          <span class="bounty-status ${fixed ? 'repaired' : 'broken'}">
+            ${fixed ? '✓ REPAIRED' : '⚠ BROKEN'}
+          </span>
+        </div>
+        <p class="bounty-desc">${item.desc}</p>
+      </div>
+
+      <div>
+        <div class="bounty-progress-wrap">
+          <div class="bounty-progress-text">
+            <span>Funding Progress</span>
+            <span>$${funds.toFixed(2)} / $${item.target.toFixed(2)} USDT (${percent}%)</span>
+          </div>
+          <div class="bounty-progress-bar">
+            <div class="bounty-progress-fill" style="width: ${percent}%"></div>
+          </div>
+        </div>
+
+        <div class="bounty-actions">
+          ${fixed ? 
+            `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>Fully Funded</button>` :
+            `<button class="btn btn-simulate" data-simulate="${id}">+ $10 USDT (Simulate)</button>`
+          }
+        </div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  if (totalRaisedEl) totalRaisedEl.textContent = `$${totalRaised.toFixed(2)} USDT`;
+  if (solvedCountEl) solvedCountEl.textContent = `${solvedCount} / ${keys.length}`;
+
+  grid.querySelectorAll('[data-simulate]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = btn.dataset.simulate;
+      addFunds(id, 10);
+    });
+  });
+}
+
 
 /* ---------- MODULE REGISTRY ---------- */
 const chaosModules = [];
@@ -11,6 +135,14 @@ function registerChaos(name, initFn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  renderBountyUI();
+  const resetBtn = document.getElementById('reset-bounties-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      resetAllBounties();
+    });
+  }
+
   chaosModules.forEach(m => {
     try { m.init(); }
     catch (err) { console.warn(`[ANTICOACH] Module "${m.name}" failed:`, err); }
@@ -21,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ============================================================
    1. INVERTED CURSOR
    Real cursor hidden. Fake cursor moves opposite to real mouse
-   deltas. Ghost dot shows true pointer position.
+   deltas (unless fixed by USDT bounty!).
 ============================================================ */
 registerChaos('invertedCursor', () => {
   const fakeCursor = document.getElementById('fake-cursor');
@@ -33,6 +165,13 @@ registerChaos('invertedCursor', () => {
   fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
 
   document.addEventListener('mousemove', (e) => {
+    if (isFixed('invertedCursor')) {
+      fx = e.clientX;
+      fy = e.clientY;
+      fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
+      return;
+    }
+
     if (lastX === null) { lastX = e.clientX; lastY = e.clientY; return; }
 
     const dx = e.clientX - lastX;
@@ -48,7 +187,6 @@ registerChaos('invertedCursor', () => {
 
     fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
 
-    // dispatch a synthetic hover check so buttons can dodge the FAKE cursor
     checkDodge(fx, fy);
   });
 
@@ -123,7 +261,6 @@ registerChaos('invertedCursor', () => {
     isSynthesizing = false;
   }, true);
 
-  // expose fx/fy for other modules
   window._fakeCursor = { getPos: () => ({ x: fx, y: fy }) };
 });
 
@@ -134,6 +271,7 @@ registerChaos('invertedCursor', () => {
 ============================================================ */
 registerChaos('reverseScroll', () => {
   window.addEventListener('wheel', (e) => {
+    if (isFixed('reverseScroll')) return;
     e.preventDefault();
     window.scrollBy({ top: -e.deltaY, left: -e.deltaX, behavior: 'auto' });
   }, { passive: false });
@@ -148,7 +286,8 @@ registerChaos('menuRedirection', () => {
   document.querySelectorAll('nav a[data-target]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      const target = document.getElementById(link.dataset.target);
+      let targetId = link.dataset.target;
+      const target = document.getElementById(targetId);
       if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
   });
@@ -162,6 +301,7 @@ registerChaos('menuRedirection', () => {
 let dodgeOffsets = new WeakMap();
 
 function checkDodge(cx, cy) {
+  if (isFixed('evasiveButton')) return;
   const dodgeButtons = document.querySelectorAll('.dodge');
   dodgeButtons.forEach(btn => {
     const rect = btn.getBoundingClientRect();
@@ -184,9 +324,12 @@ function checkDodge(cx, cy) {
 }
 
 registerChaos('evasiveButton', () => {
-  // slowly drift dodge buttons back home
   setInterval(() => {
     document.querySelectorAll('.dodge').forEach(btn => {
+      if (isFixed('evasiveButton')) {
+        btn.style.transform = 'translate(0,0)';
+        return;
+      }
       const prev = dodgeOffsets.get(btn) || { x: 0, y: 0 };
       const nx = prev.x * 0.9;
       const ny = prev.y * 0.9;
@@ -210,15 +353,15 @@ registerChaos('formSabotage', () => {
   const consentBox = document.getElementById('consent');
   const formMsg = document.getElementById('form-msg');
 
-  // typing reverses itself
   nameInput.addEventListener('input', (e) => {
+    if (isFixed('formSabotage')) return;
     const v = e.target.value;
     e.target.value = v.split('').reverse().join('');
     e.target.setSelectionRange(0, 0);
   });
 
-  // consent checkbox refuses to stay checked
   consentBox.addEventListener('click', (e) => {
+    if (isFixed('formSabotage')) return;
     e.preventDefault();
     consentBox.checked = false;
     formMsg.textContent = 'consent denied. try harder.';
@@ -226,8 +369,12 @@ registerChaos('formSabotage', () => {
     setTimeout(() => { formMsg.textContent = ''; }, 1600);
   });
 
-  // submit shows error, cancel shows success
   document.getElementById('submit-btn').addEventListener('click', () => {
+    if (isFixed('formSabotage')) {
+      formMsg.textContent = 'Success! Your session has been booked cleanly.';
+      formMsg.style.color = 'var(--cyan)';
+      return;
+    }
     formMsg.textContent = 'ERROR: your request was too successful. try failing instead.';
     formMsg.style.color = 'var(--magenta)';
   });
@@ -255,10 +402,21 @@ registerChaos('lyingCopyButton', () => {
   ];
 
   copyBtn.addEventListener('click', async () => {
+    if (isFixed('lyingCopyButton')) {
+      const realAddress = document.getElementById('wallet-address').textContent.trim();
+      try {
+        await navigator.clipboard.writeText(realAddress);
+      } catch (err) {}
+      copyMsg.textContent = `Copied real wallet address: "${realAddress}"`;
+      copyMsg.style.color = 'var(--cyan)';
+      setTimeout(() => { copyMsg.textContent = ''; }, 3000);
+      return;
+    }
+
     const msg = trollMessages[Math.floor(Math.random() * trollMessages.length)];
     try {
       await navigator.clipboard.writeText(msg);
-    } catch (err) { /* clipboard blocked, still show the joke */ }
+    } catch (err) {}
     copyMsg.textContent = `Copied to clipboard: "${msg}"`;
     copyMsg.style.color = 'var(--yellow)';
     setTimeout(() => { copyMsg.textContent = ''; }, 2200);
@@ -268,7 +426,6 @@ registerChaos('lyingCopyButton', () => {
 
 /* ============================================================
    6. MODAL THAT MULTIPLIES
-   Yes cancels, No confirms, closing opens another (up to 3).
 ============================================================ */
 let modalCount = 0;
 
@@ -296,15 +453,11 @@ function openModal() {
   });
 }
 
-registerChaos('modalMultiply', () => {
-  // modal is triggered by the CTA button flow (via loading bar now)
-});
+registerChaos('modalMultiply', () => {});
 
 
 /* ============================================================
    7. FAKE LOADING BAR
-   Crawls to 99%, resets with a snarky message. Loops 3 times
-   then opens the modal.
 ============================================================ */
 const loadingMessages = [
   "optimizing your potential...",
@@ -340,7 +493,6 @@ function showLoadingBar() {
     percent.textContent = '0%';
 
     const interval = setInterval(() => {
-      // slow down as we approach 99
       const increment = progress < 60 ? Math.random() * 3 + 1 :
                         progress < 90 ? Math.random() * 1.5 + 0.3 :
                         Math.random() * 0.5 + 0.05;
@@ -348,7 +500,6 @@ function showLoadingBar() {
       fill.style.width = progress + '%';
       percent.textContent = Math.floor(progress) + '%';
 
-      // swap message occasionally
       if (Math.random() < 0.02) {
         text.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
       }
@@ -358,7 +509,6 @@ function showLoadingBar() {
         loops++;
 
         setTimeout(() => {
-          // RESET
           fill.style.width = '0%';
           percent.textContent = '0%';
           text.textContent = resetMessages[Math.floor(Math.random() * resetMessages.length)];
@@ -382,19 +532,19 @@ function showLoadingBar() {
 
 /* ============================================================
    8. TEXT SCRAMBLE ON HOVER
-   Hovering over paragraphs and cards scrambles text briefly.
 ============================================================ */
 registerChaos('textScramble', () => {
   const glyphPool = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`¡¢£¤¥¦§¨©ª«¬®¯°±²³µ¶·¸¹º»¼½¾¿×÷';
 
   function scrambleElement(el) {
+    if (isFixed('textScramble')) return;
     if (el._scrambling) return;
     el._scrambling = true;
     el.classList.add('scrambling');
 
     const original = el.textContent;
     const chars = original.split('');
-    const duration = 350; // ms
+    const duration = 350;
     const steps = 8;
     const stepTime = duration / steps;
     let step = 0;
@@ -404,7 +554,6 @@ registerChaos('textScramble', () => {
       const fraction = step / steps;
       const result = chars.map((ch, i) => {
         if (ch === ' ') return ' ';
-        // progressively reveal original characters
         if (i / chars.length < fraction) return ch;
         return glyphPool[Math.floor(Math.random() * glyphPool.length)];
       });
@@ -419,7 +568,6 @@ registerChaos('textScramble', () => {
     }, stepTime);
   }
 
-  // Target paragraphs and card bodies
   document.querySelectorAll('.card p, .lede, section > p').forEach(el => {
     el.classList.add('scramble-target');
     el.addEventListener('mouseenter', () => scrambleElement(el));
@@ -429,8 +577,6 @@ registerChaos('textScramble', () => {
 
 /* ============================================================
    9. DRAG-AND-DROP SNAPBACK
-   Service cards are draggable but rubber-band back with a
-   snarky tooltip.
 ============================================================ */
 registerChaos('dragSnapback', () => {
   const tooltips = [
@@ -442,7 +588,6 @@ registerChaos('dragSnapback', () => {
   ];
 
   document.querySelectorAll('.card').forEach(card => {
-    // add tooltip element
     const tip = document.createElement('div');
     tip.className = 'card-tooltip';
     card.appendChild(tip);
@@ -472,13 +617,11 @@ registerChaos('dragSnapback', () => {
       card.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)';
       card.style.transform = 'translate(0,0) rotate(0)';
 
-      // show tooltip
       tip.textContent = tooltips[Math.floor(Math.random() * tooltips.length)];
       card.classList.add('snapped');
       setTimeout(() => card.classList.remove('snapped'), 2000);
     });
 
-    // prevent native drag ghost
     card.addEventListener('dragstart', (e) => e.preventDefault());
   });
 });
@@ -486,17 +629,21 @@ registerChaos('dragSnapback', () => {
 
 /* ============================================================
    10. DARK MODE TOGGLE
-   "Dark Mode" → blinding white. "Light Mode" → ultra dark.
-   Cycles forever.
 ============================================================ */
 registerChaos('darkModeToggle', () => {
   const btn = document.getElementById('dark-toggle');
   if (!btn) return;
 
-  // States: 'normal' → 'light' → 'ultra-dark' → 'light' → 'ultra-dark' ...
   let state = 'normal';
 
   btn.addEventListener('click', () => {
+    if (isFixed('darkModeToggle')) {
+      document.body.classList.remove('ultra-dark');
+      document.body.classList.toggle('light-mode');
+      btn.textContent = document.body.classList.contains('light-mode') ? '☀ Light Mode' : '☾ Dark Mode';
+      return;
+    }
+
     document.body.classList.remove('light-mode', 'ultra-dark');
 
     if (state === 'normal' || state === 'ultra-dark') {
@@ -514,7 +661,6 @@ registerChaos('darkModeToggle', () => {
 
 /* ============================================================
    11. FAKE TOAST NOTIFICATIONS
-   Random snarky popups every 15-30 seconds.
 ============================================================ */
 registerChaos('fakeToasts', () => {
   const container = document.getElementById('toast-container');
@@ -534,12 +680,12 @@ registerChaos('fakeToasts', () => {
   ];
 
   function showToast() {
+    if (isFixed('fakeToasts')) return;
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = messages[Math.floor(Math.random() * messages.length)];
     container.appendChild(toast);
 
-    // auto-dismiss after 4 seconds
     setTimeout(() => {
       toast.classList.add('toast-out');
       setTimeout(() => toast.remove(), 300);
@@ -547,14 +693,13 @@ registerChaos('fakeToasts', () => {
   }
 
   function scheduleNext() {
-    const delay = (Math.random() * 15000) + 15000; // 15-30 seconds
+    const delay = (Math.random() * 15000) + 15000;
     setTimeout(() => {
       showToast();
       scheduleNext();
     }, delay);
   }
 
-  // first toast after a shorter delay
   setTimeout(showToast, 5000);
   scheduleNext();
 });
@@ -562,7 +707,6 @@ registerChaos('fakeToasts', () => {
 
 /* ============================================================
    12. GLITCH BURST EFFECT
-   Occasional extra-intense glitch burst on the hero text.
 ============================================================ */
 registerChaos('glitchBurst', () => {
   const glitchEl = document.querySelector('.glitch');
@@ -573,7 +717,6 @@ registerChaos('glitchBurst', () => {
     setTimeout(() => glitchEl.classList.remove('burst'), 400);
   }
 
-  // random bursts every 8-20 seconds
   function scheduleNext() {
     const delay = (Math.random() * 12000) + 8000;
     setTimeout(() => {
@@ -588,7 +731,6 @@ registerChaos('glitchBurst', () => {
 
 /* ============================================================
    13. PAGE SHAKE / TREMOR
-   Random subtle body shake every 20-40 seconds.
 ============================================================ */
 registerChaos('pageShake', () => {
   function shake() {
@@ -597,7 +739,7 @@ registerChaos('pageShake', () => {
   }
 
   function scheduleNext() {
-    const delay = (Math.random() * 20000) + 20000; // 20-40s
+    const delay = (Math.random() * 20000) + 20000;
     setTimeout(() => {
       shake();
       scheduleNext();
@@ -610,8 +752,6 @@ registerChaos('pageShake', () => {
 
 /* ============================================================
    14. EMAIL FIELD CORRUPTION
-   Email field randomly corrupts the @ symbol and appends
-   garbage domains.
 ============================================================ */
 registerChaos('emailCorruption', () => {
   const emailInput = document.getElementById('email');
@@ -627,19 +767,17 @@ registerChaos('emailCorruption', () => {
   let corruptTimeout = null;
 
   emailInput.addEventListener('input', () => {
+    if (isFixed('emailCorruption')) return;
     clearTimeout(corruptTimeout);
 
-    // after user stops typing for 800ms, corrupt the email
     corruptTimeout = setTimeout(() => {
       let val = emailInput.value;
 
-      // replace @ with a random fake symbol
       if (val.includes('@')) {
         const sym = fakeSymbols[Math.floor(Math.random() * fakeSymbols.length)];
         val = val.replace('@', sym);
         emailInput.value = val;
       }
-      // if they haven't typed @, append a garbage domain
       else if (val.length > 3 && !val.includes('@')) {
         const domain = fakeDomains[Math.floor(Math.random() * fakeDomains.length)];
         emailInput.value = val + domain;
@@ -651,7 +789,6 @@ registerChaos('emailCorruption', () => {
 
 /* ============================================================
    15. INVERTED TAB ORDER
-   Dynamically sets reversed tabindex on form fields.
 ============================================================ */
 registerChaos('invertedTabOrder', () => {
   const fields = document.querySelectorAll('#chaos-form input, #chaos-form textarea, #chaos-form button');
@@ -664,7 +801,6 @@ registerChaos('invertedTabOrder', () => {
 
 /* ============================================================
    16. COUNTDOWN THAT COUNTS UP
-   "Session starts in..." counts UP from 0, never down.
 ============================================================ */
 registerChaos('countUpTimer', () => {
   const display = document.getElementById('countdown-value');
@@ -673,6 +809,10 @@ registerChaos('countUpTimer', () => {
   let seconds = 0;
 
   setInterval(() => {
+    if (isFixed('countUpTimer')) {
+      display.textContent = '15:00 (Active)';
+      return;
+    }
     seconds++;
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -689,8 +829,7 @@ registerChaos('countUpTimer', () => {
 
 
 /* ============================================================
-   17. VOLUME SLIDER (controls font size, not audio)
-   Labeled "Coaching Volume" — actually changes page font size.
+   17. VOLUME SLIDER
 ============================================================ */
 registerChaos('volumeSlider', () => {
   const slider = document.getElementById('volume-slider');
@@ -698,10 +837,14 @@ registerChaos('volumeSlider', () => {
   if (!slider || !valueDisplay) return;
 
   slider.addEventListener('input', () => {
+    if (isFixed('volumeSlider')) {
+      document.documentElement.style.setProperty('--font-size-base', '16px');
+      valueDisplay.textContent = `Volume: ${slider.value}% (Normal)`;
+      return;
+    }
     const vol = parseInt(slider.value);
     valueDisplay.textContent = `Volume: ${vol}%`;
 
-    // map 0-100 to font size 8px-32px
     const fontSize = 8 + (vol / 100) * 24;
     document.documentElement.style.setProperty('--font-size-base', fontSize + 'px');
   });

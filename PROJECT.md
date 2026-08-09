@@ -96,15 +96,24 @@ PROJECT.md      # this file — technical documentation
 README.md       # deadpan public-facing documentation
 ```
 
-## Architecture — chaos module system
+### Crowdfunded UX Repairs (Bounty System)
+
+19. **Pay to Fix the Portal (USDT Bounties)** — Each broken interaction has a
+    community USDT goal (e.g. $50 USDT for Inverted Cursor). Visitors can contribute
+    or simulate USDT payments. Once a target is 100% funded, the bug is automatically
+    patched in real-time, restoring standard, sane web behavior!
+
+## Architecture — chaos module system & bounty manager
 
 All JavaScript chaos is organized via a simple registration pattern:
 
 ```js
 registerChaos('moduleName', () => {
-  // self-contained prank logic
+  // self-contained prank logic with isFixed('moduleName') state hooks
 });
 ```
+
+The `bountyManager` tracks current USDT contributions in `localStorage`. When `isFixed(id)` evaluates to `true`, the corresponding chaos module automatically disables its sabotage behavior.
 
 Modules are booted on `DOMContentLoaded`. Each is wrapped in a try/catch so
 one broken prank can't take down the whole page. Adding a new module is a
