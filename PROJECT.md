@@ -66,10 +66,63 @@ confirmation modal's Yes/No logic is flipped.
     keyboard-tabbing goes backwards through the form.
 17. **Countdown timer that counts up** — "Session starts in…" counts up from
     00:00, never counting down. The session never starts.
-18. **Volume slider** — labeled "Coaching Volume" but actually controls the
-    page's base font size.
+18. **Volume slider** — labeled "Coaching Volume" but actually controls the page's base font size.
 
-### Visual polish
+### New chaos modules (v3)
+
+19. **Upside-down scroll flip** — scrolling past 35% flips the entire body 180°.
+20. **Modal hydra** — closing a modal spawns two smaller hydra popups.
+21. **UI gravity drop** — navigation links lose gravity and drop to the floor.
+22. **Font family sabotage** — text fonts randomly transform into Comic Sans / Papyrus / Wingdings.
+23. **Custom right-click menu** — right-click opens custom context menu (Inspect Soul, Source of Regret).
+24. **Focus drift zoom** — idling for 6 seconds triggers random page zoom jumps.
+25. **Ghost backspace in inputs** — typing in inputs triggers random backspacing.
+26. **Glitch audio feedback** — Web Audio API generates retro glitch pops on interactions.
+
+### Configurable Feature Toggles (`chaosFeatureToggles`)
+
+All 25 features are fully configurable in [script.js](file:///c:/Activities/Projects/anticoach/script.js) via the `chaosFeatureToggles` config object:
+
+```js
+const chaosFeatureToggles = {
+  invertedCursor: true,
+  reverseScroll: true,
+  upsideDownScroll: true,
+  modalHydra: true,
+  uiGravity: true,
+  fontScramble: true,
+  customContextMenu: true,
+  focusDrift: true,
+  ghostBackspace: true,
+  glitchAudio: true,
+  // Set any feature to true (enabled) or false (disabled)
+};
+```
+
+Features can also be repaired dynamically when visitors fund their USDT bounty target!
+
+### True Web3 On-Chain Smart Contract & Decentralized State Reader
+
+The `contracts/AnticoachBounties.sol` smart contract records all category contributions on the EVM blockchain and forwards USDT directly to the owner address `0x32f6f912133d4c36879c79a1415f2e1fb39432ee`.
+Front-end `script.js` uses `ethers.JsonRpcProvider` to read category totals directly from the smart contract on-chain every 15 seconds. Global progress bars are 100% serverless, decentralized, and tamper-proof for all visitors worldwide!
+
+## Architecture — chaos module system & bounty manager
+
+All JavaScript chaos is organized via a simple registration pattern:
+
+```js
+registerChaos('moduleName', () => {
+  // self-contained prank logic with isChaosActive('moduleName') state hooks
+});
+```
+
+The `bountyManager` tracks current USDT contributions via `fetchOnChainBountyTotals()` and `localStorage`. When `isChaosActive(id)` evaluates to `false` (either disabled in config or fixed by funding), the corresponding chaos module automatically disables its sabotage behavior.
+
+Modules are booted on `DOMContentLoaded`. Each is wrapped in a try/catch so
+one broken prank can't take down the whole page. Adding a new module is a
+single `registerChaos()` call.
+
+## Visual polish
 
 - **CRT scanline overlay** — subtle full-page repeating gradient that gives
   the whole page a retro broken-TV look.
@@ -96,28 +149,6 @@ contracts/AnticoachBounties.sol # Solidity 0.8.20 Smart Contract for EVM network
 PROJECT.md                      # this file — technical documentation
 README.md                       # deadpan public-facing documentation
 ```
-
-### True Web3 On-Chain Smart Contract & Decentralized State Reader
-
-19. **Pay to Fix the Portal (USDT Bounties)** — Each broken interaction maps to a real-life struggle with a USDT target.
-    The `contracts/AnticoachBounties.sol` smart contract records all category contributions on the EVM blockchain and forwards USDT directly to the owner address `0x32f6f912133d4c36879c79a1415f2e1fb39432ee`.
-    Front-end `script.js` uses `ethers.JsonRpcProvider` to read category totals directly from the smart contract on-chain every 15 seconds. Global progress bars are 100% serverless, decentralized, and tamper-proof for all visitors worldwide!
-
-## Architecture — chaos module system & bounty manager
-
-All JavaScript chaos is organized via a simple registration pattern:
-
-```js
-registerChaos('moduleName', () => {
-  // self-contained prank logic with isFixed('moduleName') state hooks
-});
-```
-
-The `bountyManager` tracks current USDT contributions via `fetchOnChainBountyTotals()` and `localStorage`. When `isFixed(id)` evaluates to `true`, the corresponding chaos module automatically disables its sabotage behavior.
-
-Modules are booted on `DOMContentLoaded`. Each is wrapped in a try/catch so
-one broken prank can't take down the whole page. Adding a new module is a
-single `registerChaos()` call.
 
 ## Notes for whoever picks this up
 

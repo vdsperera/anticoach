@@ -1,20 +1,59 @@
 /* ============================================================
    ANTICOACH — script.js
-   Chaos module system + Crowdfunded UX Repairs (Bounty System).
+   Chaos module system + Life Struggles Bounty System + Web3.
 ============================================================ */
 
-/* ---------- BOUNTY CONFIG (Life Struggles Mapping) ---------- */
+/* ---------- GLOBAL CHAOS FEATURE TOGGLES ---------- */
 /*
-  Each entry maps a website chaos module to a real-life struggle.
-  Edit this config to update issues, targets, and descriptions.
-  The website gets cleaner as life gets better.
+  Set any feature to true to enable chaos, or false to disable it globally.
+  If set to true, it can also be dynamically repaired when visitors fund its
+  USDT bounty target!
 */
+const chaosFeatureToggles = {
+  invertedCursor: true,
+  reverseScroll: true,
+  menuRedirection: true,
+  evasiveButton: true,
+  formSabotage: true,
+  lyingCopyButton: true,
+  modalMultiply: true,
+  fakeLoadingBar: true,
+  textScramble: true,
+  dragSnapback: true,
+  darkModeToggle: true,
+  fakeToasts: true,
+  glitchBurst: true,
+  pageShake: true,
+  emailCorruption: true,
+  invertedTabOrder: true,
+  countUpTimer: true,
+  volumeSlider: true,
+
+  // NEW CHAOS MODULES
+  upsideDownScroll: true,
+  modalHydra: true,
+  uiGravity: true,
+  fontScramble: true,
+  customContextMenu: true,
+  focusDrift: true,
+  ghostBackspace: true,
+  glitchAudio: true
+};
+
+function isChaosActive(id) {
+  // If explicitly disabled in config, or if fixed by bounty, chaos is inactive
+  if (chaosFeatureToggles[id] === false) return false;
+  return !isFixed(id);
+}
+
+
+/* ---------- BOUNTY CONFIG (Life Struggles Mapping) ---------- */
 const bountyConfig = [
   {
     id: 'invertedCursor',
     bugTitle: 'Inverted Mouse Cursor',
     lifeIssue: 'Family Emergency Fund',
-    lifeDesc: 'Critical family situation requiring emergency financial support. This is the most urgent and important thing in my life right now.',
+    lifeDesc: 'Critical family situation requiring emergency financial support. This is the most urgent thing in my life right now.',
     priority: 'CRITICAL',
     targetUSDT: 30000,
     initialUSDT: 0
@@ -29,6 +68,15 @@ const bountyConfig = [
     initialUSDT: 0
   },
   {
+    id: 'upsideDownScroll',
+    bugTitle: 'Upside-Down Page Flip',
+    lifeIssue: 'Impending Burnout & Overwork',
+    lifeDesc: 'Pushing too hard turns your whole world upside down. Need to manage stress and workload before life flips completely.',
+    priority: 'CRITICAL',
+    targetUSDT: 4000,
+    initialUSDT: 0
+  },
+  {
     id: 'formSabotage',
     bugTitle: 'Form Input Sabotage',
     lifeIssue: 'Laptop/PC Upgrade for Work',
@@ -38,12 +86,30 @@ const bountyConfig = [
     initialUSDT: 0
   },
   {
+    id: 'modalHydra',
+    bugTitle: 'Modal Hydra Multiplication',
+    lifeIssue: 'Multi-Tasking Overload',
+    lifeDesc: 'Solving one problem only creates two more. Need breathing room to handle issues one at a time.',
+    priority: 'HIGH',
+    targetUSDT: 1800,
+    initialUSDT: 0
+  },
+  {
     id: 'evasiveButton',
     bugTitle: 'Evasive CTA Button',
     lifeIssue: 'Online Course & Education',
     lifeDesc: 'Opportunities keep running away from me like this button runs from your cursor. Investing in education to catch them.',
     priority: 'HIGH',
     targetUSDT: 1500,
+    initialUSDT: 0
+  },
+  {
+    id: 'uiGravity',
+    bugTitle: 'UI Elements Fall to Floor',
+    lifeIssue: 'Collapsing Infrastructure & Car Repairs',
+    lifeDesc: 'Everything feels like it is falling apart at the seams. Need funds for emergency vehicle and home maintenance.',
+    priority: 'HIGH',
+    targetUSDT: 1400,
     initialUSDT: 0
   },
   {
@@ -65,6 +131,24 @@ const bountyConfig = [
     initialUSDT: 0
   },
   {
+    id: 'fontScramble',
+    bugTitle: 'Font Family Sabotage',
+    lifeIssue: 'Imposter Syndrome & Confidence',
+    lifeDesc: 'Everything feels fake and unprofessional under pressure. Working on mental confidence and clarity.',
+    priority: 'MEDIUM',
+    targetUSDT: 800,
+    initialUSDT: 0
+  },
+  {
+    id: 'customContextMenu',
+    bugTitle: 'Right-Click Context Sabotage',
+    lifeIssue: 'Bad Advice & Unhelpful Guidance',
+    lifeDesc: 'Surrounded by unhelpful options when looking for solutions. Seeking genuine mentorship.',
+    priority: 'MEDIUM',
+    targetUSDT: 600,
+    initialUSDT: 0
+  },
+  {
     id: 'emailCorruption',
     bugTitle: 'Email Field Corruption',
     lifeIssue: 'Proper Domain & Hosting',
@@ -83,6 +167,15 @@ const bountyConfig = [
     initialUSDT: 0
   },
   {
+    id: 'focusDrift',
+    bugTitle: 'Random Zoom Focus Drift',
+    lifeIssue: 'ADHD & Brain Fog Management',
+    lifeDesc: 'Focus drifts in and out uncontrollably. Wellness fund for attention management tools.',
+    priority: 'LOW',
+    targetUSDT: 300,
+    initialUSDT: 0
+  },
+  {
     id: 'lyingCopyButton',
     bugTitle: 'Lying Copy Button',
     lifeIssue: 'Quality Microphone for Content',
@@ -98,6 +191,24 @@ const bountyConfig = [
     lifeDesc: 'Time keeps ticking and the fridge keeps emptying. This fund helps keep food on the table.',
     priority: 'LOW',
     targetUSDT: 200,
+    initialUSDT: 0
+  },
+  {
+    id: 'ghostBackspace',
+    bugTitle: 'Ghost Backspace in Inputs',
+    lifeIssue: 'Communication & Tech Obstacles',
+    lifeDesc: 'Every time I try to express myself, things get deleted or miscommunicated.',
+    priority: 'LOW',
+    targetUSDT: 150,
+    initialUSDT: 0
+  },
+  {
+    id: 'glitchAudio',
+    bugTitle: 'Annoying Glitch Audio Bleeps',
+    lifeIssue: 'Noise-Cancelling Headphones',
+    lifeDesc: 'Constant noise disrupting focus. Need proper noise-cancelling equipment for deep work.',
+    priority: 'LOW',
+    targetUSDT: 120,
     initialUSDT: 0
   },
   {
@@ -409,17 +520,14 @@ function openDonationModal(id) {
 
 
 /* ---------- ON-CHAIN SMART CONTRACT INTEGRATION ---------- */
-// Smart Contract Address (Deploy AnticoachBounties.sol to Polygon/EVM network and paste address here)
 const ANTICOACH_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-// Smart Contract ABI (Minimal ABI for reading totals and executing donations)
 const ANTICOACH_CONTRACT_ABI = [
   "function getAllCategoryTotals() external view returns (uint256[11] memory)",
   "function categoryRaisedUSDT(uint8 categoryId) external view returns (uint256)",
   "function donateToGoal(uint8 categoryId, uint256 usdtAmount) external"
 ];
 
-// Public RPC Nodes for On-Chain Reading (Polygon / BSC / EVM)
 const PUBLIC_RPC_URLS = [
   "https://polygon-rpc.com",
   "https://rpc.ankr.com/polygon",
@@ -428,7 +536,7 @@ const PUBLIC_RPC_URLS = [
 
 async function fetchOnChainBountyTotals() {
   if (ANTICOACH_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
-    return; // Contract address placeholder — fallback to local/simulated state
+    return;
   }
 
   if (typeof ethers === 'undefined') return;
@@ -472,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderBountyUI();
   initDonationModal();
   fetchOnChainBountyTotals();
-  setInterval(fetchOnChainBountyTotals, 15000); // Poll on-chain state every 15s
+  setInterval(fetchOnChainBountyTotals, 15000);
 
   const resetBtn = document.getElementById('reset-bounties-btn');
   if (resetBtn) {
@@ -490,8 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ============================================================
    1. INVERTED CURSOR
-   Real cursor hidden. Fake cursor moves opposite to real mouse
-   deltas (unless fixed by USDT bounty!).
 ============================================================ */
 registerChaos('invertedCursor', () => {
   const fakeCursor = document.getElementById('fake-cursor');
@@ -503,7 +609,7 @@ registerChaos('invertedCursor', () => {
   fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
 
   document.addEventListener('mousemove', (e) => {
-    if (isFixed('invertedCursor')) {
+    if (!isChaosActive('invertedCursor')) {
       fx = e.clientX;
       fy = e.clientY;
       fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
@@ -516,7 +622,6 @@ registerChaos('invertedCursor', () => {
     const dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
 
-    // INVERT the delta
     fx -= dx;
     fy -= dy;
 
@@ -528,7 +633,6 @@ registerChaos('invertedCursor', () => {
     checkDodge(fx, fy);
   });
 
-  // Synthetic click / mousedown / mouseup handling at fake cursor coordinates (fx, fy)
   let isSynthesizing = false;
 
   document.addEventListener('mousedown', (e) => {
@@ -605,11 +709,10 @@ registerChaos('invertedCursor', () => {
 
 /* ============================================================
    2. REVERSE SCROLL
-   Wheel events intercepted; scroll direction flipped.
 ============================================================ */
 registerChaos('reverseScroll', () => {
   window.addEventListener('wheel', (e) => {
-    if (isFixed('reverseScroll')) return;
+    if (!isChaosActive('reverseScroll')) return;
     e.preventDefault();
     window.scrollBy({ top: -e.deltaY, left: -e.deltaX, behavior: 'auto' });
   }, { passive: false });
@@ -618,13 +721,21 @@ registerChaos('reverseScroll', () => {
 
 /* ============================================================
    3. MENU REDIRECTION
-   Nav links labeled one thing, scroll to another.
 ============================================================ */
 registerChaos('menuRedirection', () => {
   document.querySelectorAll('nav a[data-target]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       let targetId = link.dataset.target;
+      if (!isChaosActive('menuRedirection')) {
+        const label = link.textContent.trim().toLowerCase();
+        if (label.includes('home')) targetId = 'home';
+        else if (label.includes('about')) targetId = 'about';
+        else if (label.includes('services')) targetId = 'services';
+        else if (label.includes('help')) targetId = 'help';
+        else if (label.includes('pay-to-fix')) targetId = 'bounties';
+        else if (label.includes('contribute')) targetId = 'contribute';
+      }
       const target = document.getElementById(targetId);
       if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
@@ -634,12 +745,11 @@ registerChaos('menuRedirection', () => {
 
 /* ============================================================
    4. EVASIVE BUTTON
-   Primary CTA scoots away when fake cursor gets close.
 ============================================================ */
 let dodgeOffsets = new WeakMap();
 
 function checkDodge(cx, cy) {
-  if (isFixed('evasiveButton')) return;
+  if (!isChaosActive('evasiveButton')) return;
   const dodgeButtons = document.querySelectorAll('.dodge');
   dodgeButtons.forEach(btn => {
     const rect = btn.getBoundingClientRect();
@@ -664,7 +774,7 @@ function checkDodge(cx, cy) {
 registerChaos('evasiveButton', () => {
   setInterval(() => {
     document.querySelectorAll('.dodge').forEach(btn => {
-      if (isFixed('evasiveButton')) {
+      if (!isChaosActive('evasiveButton')) {
         btn.style.transform = 'translate(0,0)';
         return;
       }
@@ -684,7 +794,6 @@ registerChaos('evasiveButton', () => {
 
 /* ============================================================
    5. FORM SABOTAGE
-   Typing reverses, consent checkbox refuses, submit/cancel swapped.
 ============================================================ */
 registerChaos('formSabotage', () => {
   const nameInput = document.getElementById('name');
@@ -692,14 +801,14 @@ registerChaos('formSabotage', () => {
   const formMsg = document.getElementById('form-msg');
 
   nameInput.addEventListener('input', (e) => {
-    if (isFixed('formSabotage')) return;
+    if (!isChaosActive('formSabotage')) return;
     const v = e.target.value;
     e.target.value = v.split('').reverse().join('');
     e.target.setSelectionRange(0, 0);
   });
 
   consentBox.addEventListener('click', (e) => {
-    if (isFixed('formSabotage')) return;
+    if (!isChaosActive('formSabotage')) return;
     e.preventDefault();
     consentBox.checked = false;
     formMsg.textContent = 'consent denied. try harder.';
@@ -708,7 +817,7 @@ registerChaos('formSabotage', () => {
   });
 
   document.getElementById('submit-btn').addEventListener('click', () => {
-    if (isFixed('formSabotage')) {
+    if (!isChaosActive('formSabotage')) {
       formMsg.textContent = 'Success! Your session has been booked cleanly.';
       formMsg.style.color = 'var(--cyan)';
       return;
@@ -726,7 +835,6 @@ registerChaos('formSabotage', () => {
 
 /* ============================================================
    5b. LYING COPY BUTTON
-   Copies a troll message instead of the wallet address.
 ============================================================ */
 registerChaos('lyingCopyButton', () => {
   const copyBtn = document.getElementById('copy-btn');
@@ -740,7 +848,7 @@ registerChaos('lyingCopyButton', () => {
   ];
 
   copyBtn.addEventListener('click', async () => {
-    if (isFixed('lyingCopyButton')) {
+    if (!isChaosActive('lyingCopyButton')) {
       const realAddress = document.getElementById('wallet-address').textContent.trim();
       try {
         await navigator.clipboard.writeText(realAddress);
@@ -875,7 +983,7 @@ registerChaos('textScramble', () => {
   const glyphPool = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`¡¢£¤¥¦§¨©ª«¬®¯°±²³µ¶·¸¹º»¼½¾¿×÷';
 
   function scrambleElement(el) {
-    if (isFixed('textScramble')) return;
+    if (!isChaosActive('textScramble')) return;
     if (el._scrambling) return;
     el._scrambling = true;
     el.classList.add('scrambling');
@@ -975,7 +1083,7 @@ registerChaos('darkModeToggle', () => {
   let state = 'normal';
 
   btn.addEventListener('click', () => {
-    if (isFixed('darkModeToggle')) {
+    if (!isChaosActive('darkModeToggle')) {
       document.body.classList.remove('ultra-dark');
       document.body.classList.toggle('light-mode');
       btn.textContent = document.body.classList.contains('light-mode') ? '☀ Light Mode' : '☾ Dark Mode';
@@ -1018,7 +1126,7 @@ registerChaos('fakeToasts', () => {
   ];
 
   function showToast() {
-    if (isFixed('fakeToasts')) return;
+    if (!isChaosActive('fakeToasts')) return;
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = messages[Math.floor(Math.random() * messages.length)];
@@ -1105,7 +1213,7 @@ registerChaos('emailCorruption', () => {
   let corruptTimeout = null;
 
   emailInput.addEventListener('input', () => {
-    if (isFixed('emailCorruption')) return;
+    if (!isChaosActive('emailCorruption')) return;
     clearTimeout(corruptTimeout);
 
     corruptTimeout = setTimeout(() => {
@@ -1147,7 +1255,7 @@ registerChaos('countUpTimer', () => {
   let seconds = 0;
 
   setInterval(() => {
-    if (isFixed('countUpTimer')) {
+    if (!isChaosActive('countUpTimer')) {
       display.textContent = '15:00 (Active)';
       return;
     }
@@ -1175,7 +1283,7 @@ registerChaos('volumeSlider', () => {
   if (!slider || !valueDisplay) return;
 
   slider.addEventListener('input', () => {
-    if (isFixed('volumeSlider')) {
+    if (!isChaosActive('volumeSlider')) {
       document.documentElement.style.setProperty('--font-size-base', '16px');
       valueDisplay.textContent = `Volume: ${slider.value}% (Normal)`;
       return;
@@ -1186,4 +1294,192 @@ registerChaos('volumeSlider', () => {
     const fontSize = 8 + (vol / 100) * 24;
     document.documentElement.style.setProperty('--font-size-base', fontSize + 'px');
   });
+});
+
+
+/* ============================================================
+   18. UPSIDE-DOWN VIEWPORT FLIP
+   Scrolling past 35% flips the whole page upside down.
+============================================================ */
+registerChaos('upsideDownScroll', () => {
+  window.addEventListener('scroll', () => {
+    if (!isChaosActive('upsideDownScroll')) {
+      document.body.style.transform = '';
+      return;
+    }
+    const scrollPos = window.scrollY;
+    const threshold = document.documentElement.scrollHeight * 0.35;
+    if (scrollPos > threshold) {
+      document.body.style.transform = 'rotate(180deg)';
+    } else {
+      document.body.style.transform = '';
+    }
+  });
+});
+
+
+/* ============================================================
+   19. MODAL HYDRA
+   Closing a modal spawns two smaller hydra modals.
+============================================================ */
+registerChaos('modalHydra', () => {
+  document.addEventListener('click', (e) => {
+    if (!isChaosActive('modalHydra')) return;
+    if (e.target.matches('.modal-close-btn') || e.target.matches('[data-action="yes"]')) {
+      spawnHydraModal();
+      spawnHydraModal();
+    }
+  });
+});
+
+function spawnHydraModal() {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop hydra-modal-backdrop';
+  const rx = Math.floor(Math.random() * 60) + 20;
+  const ry = Math.floor(Math.random() * 60) + 20;
+  backdrop.innerHTML = `
+    <div class="modal hydra-modal" style="position:fixed; top:${ry}%; left:${rx}%; transform:translate(-50%,-50%) scale(0.85);">
+      <button class="modal-close-btn" type="button">&times;</button>
+      <h4>HYDRA MULTIPLIED!</h4>
+      <p>Solving one problem creates two more. Cut off one head, two take its place.</p>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  backdrop.querySelector('.modal-close-btn').addEventListener('click', () => backdrop.remove());
+}
+
+
+/* ============================================================
+   20. UI GRAVITY DROP
+   UI elements randomly lose support and drop to floor.
+============================================================ */
+registerChaos('uiGravity', () => {
+  setInterval(() => {
+    if (!isChaosActive('uiGravity')) return;
+    const targets = document.querySelectorAll('.logo, nav a, .eyebrow');
+    if (!targets.length) return;
+    const el = targets[Math.floor(Math.random() * targets.length)];
+    if (el._dropped) return;
+    el._dropped = true;
+    el.classList.add('gravity-dropped');
+    el.style.transform = `translateY(${window.innerHeight - 150}px) rotate(${Math.random() * 40 - 20}deg)`;
+    
+    el.addEventListener('click', function restore() {
+      el.style.transform = '';
+      el._dropped = false;
+      el.removeEventListener('click', restore);
+    }, { once: true });
+  }, 25000);
+});
+
+
+/* ============================================================
+   21. FONT SCRAMBLE
+   Fonts temporarily turn into Comic Sans / Papyrus / Wingdings.
+============================================================ */
+registerChaos('fontScramble', () => {
+  const funkyFonts = ['"Comic Sans MS", fantasy', 'Papyrus, fantasy', 'Wingdings, fantasy', 'Impact, sans-serif'];
+  setInterval(() => {
+    if (!isChaosActive('fontScramble')) return;
+    const font = funkyFonts[Math.floor(Math.random() * funkyFonts.length)];
+    document.body.style.fontFamily = font;
+    setTimeout(() => {
+      document.body.style.fontFamily = '';
+    }, 3000);
+  }, 14000);
+});
+
+
+/* ============================================================
+   22. CUSTOM CONTEXT MENU (Right-Click Sabotage)
+============================================================ */
+registerChaos('customContextMenu', () => {
+  document.addEventListener('contextmenu', (e) => {
+    if (!isChaosActive('customContextMenu')) return;
+    e.preventDefault();
+
+    let oldMenu = document.getElementById('custom-context-menu');
+    if (oldMenu) oldMenu.remove();
+
+    const menu = document.createElement('div');
+    menu.id = 'custom-context-menu';
+    menu.className = 'custom-menu';
+    menu.style.top = e.clientY + 'px';
+    menu.style.left = e.clientX + 'px';
+    menu.innerHTML = `
+      <div class="custom-menu-item">🔍 Inspect Soul</div>
+      <div class="custom-menu-item">📄 View Source of Regret</div>
+      <div class="custom-menu-item">🌐 Translate to Silence</div>
+      <div class="custom-menu-item">🚩 Report to Coach</div>
+    `;
+    document.body.appendChild(menu);
+
+    const close = () => menu.remove();
+    document.addEventListener('click', close, { once: true });
+  });
+});
+
+
+/* ============================================================
+   23. FOCUS DRIFT (Random Zoom Jumps)
+============================================================ */
+registerChaos('focusDrift', () => {
+  let idleTimer = null;
+  function resetTimer() {
+    clearTimeout(idleTimer);
+    if (!isChaosActive('focusDrift')) {
+      document.body.style.zoom = '';
+      return;
+    }
+    idleTimer = setTimeout(() => {
+      document.body.style.zoom = Math.random() < 0.5 ? '135%' : '75%';
+      setTimeout(() => { document.body.style.zoom = ''; }, 4000);
+    }, 6000);
+  }
+
+  ['mousemove', 'keydown', 'scroll', 'click'].forEach(evt => {
+    document.addEventListener(evt, resetTimer);
+  });
+  resetTimer();
+});
+
+
+/* ============================================================
+   24. GHOST BACKSPACE IN INPUTS
+============================================================ */
+registerChaos('ghostBackspace', () => {
+  document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', () => {
+      if (!isChaosActive('ghostBackspace')) return;
+      if (Math.random() < 0.25 && input.value.length > 0) {
+        input.value = input.value.slice(0, -1);
+      }
+    });
+  });
+});
+
+
+/* ============================================================
+   25. GLITCH AUDIO FEEDBACK
+============================================================ */
+registerChaos('glitchAudio', () => {
+  let audioCtx = null;
+  function playGlitchSound() {
+    if (!isChaosActive('glitchAudio')) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150 + Math.random() * 600, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.15);
+    } catch(e) {}
+  }
+
+  document.addEventListener('click', playGlitchSound);
 });

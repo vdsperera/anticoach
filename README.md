@@ -36,18 +36,35 @@ If you managed to make this more complicated than that, you may already be an AN
 | Copy Address | Copies the wallet address | Copies a troll message instead |
 | Confirmation Modal | Yes = yes, No = no | Yes = no, No = opens another modal |
 
-### New Chaos Modules (v2)
+### Expanded Chaos Suite (v3)
 | Feature | What It Says | What It Does |
 |---|---|---|
-| Loading Bar | Loading your growth... | Reaches 99%, resets, loops 3 times |
-| Dark Mode Toggle | Toggles dark mode | Switches to blinding white, then ultra-dark |
-| Text Scramble | Readable paragraphs | Scrambles into glyphs when you hover |
-| Service Cards | Draggable cards | Snap back with a snarky message |
-| Toast Notifications | Important updates | Random fake alerts every 15–30 seconds |
-| Countdown Timer | Session starts in... | Counts up forever. Session never starts. |
-| Volume Slider | Coaching Volume | Changes the page font size |
-| Email Field | Accepts your email | Corrupts it after you stop typing |
-| Tab Order | Normal tab navigation | Reversed. Good luck with the form. |
+| Upside-Down Scroll | Scrolls page down | Flips body 180° upside down past 35% scroll |
+| Modal Hydra | Close modal (`×`) | Spawns two smaller hydra modals in random spots |
+| UI Gravity Drop | Nav & UI elements | Randomly drop to the bottom floor every 25s |
+| Font Scramble | Clean typography | Fonts temporarily turn into Comic Sans / Wingdings |
+| Right-Click Menu | Inspect element | Custom menu (Inspect Soul, Source of Regret) |
+| Focus Drift Zoom | Active view | Idling 6s zooms page to 135% or 75% |
+| Ghost Backspace | Input field | Randomly deletes typed characters while typing |
+| Glitch Audio | Interaction sounds | Web Audio API emits retro glitch bleeps & pops |
+
+### Configurable Chaos Toggles (`chaosFeatureToggles`)
+Every feature can be individually enabled or disabled in [script.js](file:///c:/Activities/Projects/anticoach/script.js) by setting `true` or `false` in `chaosFeatureToggles`:
+
+```js
+const chaosFeatureToggles = {
+  invertedCursor: true,
+  upsideDownScroll: true,
+  modalHydra: true,
+  uiGravity: true,
+  fontScramble: true,
+  customContextMenu: true,
+  focusDrift: true,
+  ghostBackspace: true,
+  glitchAudio: true,
+  // Set to false to disable any feature completely!
+};
+```
 
 ### True Web3 On-Chain Bounties & Smart Contract
 All category progress bars are backed by our Solidity Smart Contract (`contracts/AnticoachBounties.sol`). Every visitor on Earth reads global progress directly from the blockchain via public RPC nodes — zero database or server required.

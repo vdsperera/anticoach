@@ -978,4 +978,40 @@ body.ultra-dark header{
   box-shadow: 0 0 12px rgba(255,46,136,0.4);
 }
 
+/* ============ CUSTOM CONTEXT MENU ============ */
+.custom-menu {
+  position: fixed;
+  z-index: 10000;
+  background: var(--panel);
+  border: 1px solid var(--magenta);
+  box-shadow: 0 0 20px rgba(255,46,136,0.3);
+  border-radius: 8px;
+  padding: 6px 0;
+  min-width: 180px;
+  font-family: var(--font-display);
+  font-size: 12px;
+}
+.custom-menu-item {
+  padding: 8px 14px;
+  color: var(--ink);
+  cursor: none;
+  transition: background 0.15s, color 0.15s;
+}
+.custom-menu-item:hover {
+  background: var(--magenta);
+  color: var(--void);
+}
+
+/* ============ HYDRA MODAL ============ */
+.hydra-modal {
+  transform: scale(0.85);
+  border-color: var(--yellow);
+}
+
+/* ============ GRAVITY DROPPED ============ */
+.gravity-dropped {
+  transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+
 
