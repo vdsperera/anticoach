@@ -1013,5 +1013,86 @@ body.ultra-dark header{
   transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
 
+/* ============ STICKY PORTAL STATUS BAR ============ */
+.sticky-portal-bar {
+  background: rgba(11,11,18,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--magenta);
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  font-family: var(--font-display);
+  font-size: 11px;
+  box-shadow: 0 4px 14px rgba(255,46,136,0.15);
+}
+
+.btn-bar-fix {
+  font-size: 10px;
+  padding: 4px 10px;
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: transparent;
+}
+
+/* ============ HERO FIX CHALLENGE CARD ============ */
+.hero-fix-challenge-card {
+  background: var(--panel);
+  border: 1px solid var(--magenta);
+  box-shadow: 0 0 24px rgba(255,46,136,0.25);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-top: 24px;
+  max-width: 680px;
+  position: relative;
+}
+
+.challenge-badge {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--magenta);
+  background: rgba(255,46,136,0.15);
+  border: 1px solid var(--magenta);
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.hero-fix-challenge-card h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+
+.hero-fix-challenge-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  max-width: none;
+}
+
+.btn-hero-fix {
+  font-size: 12px;
+  padding: 10px 20px;
+  background: var(--magenta);
+  border-color: var(--magenta);
+  color: var(--void);
+  font-weight: bold;
+  box-shadow: 0 0 16px rgba(255,46,136,0.4);
+}
+.btn-hero-fix:hover {
+  box-shadow: 0 0 24px rgba(255,46,136,0.6);
+}
+
+
 
 

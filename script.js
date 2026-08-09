@@ -352,6 +352,12 @@ function renderBountyUI() {
   if (totalRaisedEl) totalRaisedEl.textContent = `${formatUSDT(totalRaised)} USDT`;
   if (solvedCountEl) solvedCountEl.textContent = `${solvedCount} / ${bountyConfig.length}`;
 
+  const barActiveCountEl = document.getElementById('bar-active-count');
+  const barFixedCountEl = document.getElementById('bar-fixed-count');
+  const activeCount = bountyConfig.length - solvedCount;
+  if (barActiveCountEl) barActiveCountEl.textContent = `${activeCount}`;
+  if (barFixedCountEl) barFixedCountEl.textContent = `${solvedCount}/${bountyConfig.length}`;
+
   grid.querySelectorAll('[data-donate]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -581,6 +587,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initDonationModal();
   fetchOnChainBountyTotals();
   setInterval(fetchOnChainBountyTotals, 15000);
+
+  const scrollToBounties = (e) => {
+    e.preventDefault();
+    const bountiesSec = document.getElementById('bounties');
+    if (bountiesSec) bountiesSec.scrollIntoView({ behavior: 'smooth' });
+  };
+  const barFixBtn = document.getElementById('btn-bar-fix');
+  const heroFixBtn = document.getElementById('btn-hero-fix');
+  if (barFixBtn) barFixBtn.addEventListener('click', scrollToBounties);
+  if (heroFixBtn) heroFixBtn.addEventListener('click', scrollToBounties);
 
   const resetBtn = document.getElementById('reset-bounties-btn');
   if (resetBtn) {
