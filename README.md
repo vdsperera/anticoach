@@ -49,31 +49,34 @@ If you managed to make this more complicated than that, you may already be an AN
 | Email Field | Accepts your email | Corrupts it after you stop typing |
 | Tab Order | Normal tab navigation | Reversed. Good luck with the form. |
 
-### Crowdfunded UX Repairs (Bounties)
-Want sane web standards back? Every broken interaction has a community USDT bounty target. Send USDT (or click "+$10 USDT Simulate" to test). Once a feature hits 100% funding, the bug automatically patches itself for everyone in real-time!
+### True Web3 On-Chain Bounties & Smart Contract
+All category progress bars are backed by our Solidity Smart Contract (`contracts/AnticoachBounties.sol`). Every visitor on Earth reads global progress directly from the blockchain via public RPC nodes — zero database or server required.
 
 ### Visual Polish
 - **Glitch effect** on hero text with periodic intense bursts
 - **CRT scanline overlay** for that broken-TV aesthetic
 - **Random page tremor** every 20–40 seconds — because stability is overrated
 
-## Tech Stack
+## Smart Contract Deployment Guide (Remix IDE in 2 Minutes)
 
-- HTML
-- CSS
-- JavaScript
-- Spite
-
-No frameworks. No dependencies. No bundler. No hope.
+1. Open [Remix IDE](https://remix.ethereum.org/).
+2. Create a file `AnticoachBounties.sol` and paste the contents from `contracts/AnticoachBounties.sol`.
+3. Compile with Solidity `0.8.20`.
+4. Deploy under "Injected Provider - MetaMask" on Polygon / BSC / Arbitrum using your USDT token address as the constructor parameter:
+   - **Polygon USDT**: `0xc2132D05D31c914a87C6611C10748AEb04B58e8F`
+   - **Ethereum USDT**: `0xdAC17F958D2ee523a2206206994597C13D831ec7`
+   - **BSC USDT**: `0x55d398326f99059fF775485246999027B3197955`
+5. Copy your deployed contract address and set `const ANTICOACH_CONTRACT_ADDRESS = "0xYourDeployedAddress"` in `script.js`!
 
 ## File Structure
 
 ```
-index.html      ← Markup
-styles.css      ← All visual chaos
-script.js       ← All behavioral chaos (modular system)
-PROJECT.md      ← Technical documentation
-README.md       ← You are here. Congratulations.
+index.html                      ← Clean HTML markup
+styles.css                      ← All visual chaos & dark themes
+script.js                       ← All behavioral chaos + Web3 On-Chain RPC reader
+contracts/AnticoachBounties.sol ← Solidity 0.8.20 Smart Contract
+PROJECT.md                      ← Technical documentation
+README.md                       ← You are here. Congratulations.
 ```
 
 ## Contributing

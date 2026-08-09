@@ -89,19 +89,19 @@ confirmation modal's Yes/No logic is flipped.
 ## File structure
 
 ```
-index.html      # clean markup — no inline styles or scripts
-styles.css      # all visual chaos — tokens, layout, animations, themes
-script.js       # all behavioral chaos — modular system (registerChaos)
-PROJECT.md      # this file — technical documentation
-README.md       # deadpan public-facing documentation
+index.html                      # clean markup — no inline styles or scripts
+styles.css                      # all visual chaos — tokens, layout, animations, themes
+script.js                       # all behavioral chaos + Web3 & On-Chain RPC reader
+contracts/AnticoachBounties.sol # Solidity 0.8.20 Smart Contract for EVM network
+PROJECT.md                      # this file — technical documentation
+README.md                       # deadpan public-facing documentation
 ```
 
-### Crowdfunded UX Repairs (Bounty System)
+### True Web3 On-Chain Smart Contract & Decentralized State Reader
 
-19. **Pay to Fix the Portal (USDT Bounties)** — Each broken interaction has a
-    community USDT goal (e.g. $50 USDT for Inverted Cursor). Visitors can contribute
-    or simulate USDT payments. Once a target is 100% funded, the bug is automatically
-    patched in real-time, restoring standard, sane web behavior!
+19. **Pay to Fix the Portal (USDT Bounties)** — Each broken interaction maps to a real-life struggle with a USDT target.
+    The `contracts/AnticoachBounties.sol` smart contract records all category contributions on the EVM blockchain and forwards USDT directly to the owner address `0x32f6f912133d4c36879c79a1415f2e1fb39432ee`.
+    Front-end `script.js` uses `ethers.JsonRpcProvider` to read category totals directly from the smart contract on-chain every 15 seconds. Global progress bars are 100% serverless, decentralized, and tamper-proof for all visitors worldwide!
 
 ## Architecture — chaos module system & bounty manager
 
@@ -113,7 +113,7 @@ registerChaos('moduleName', () => {
 });
 ```
 
-The `bountyManager` tracks current USDT contributions in `localStorage`. When `isFixed(id)` evaluates to `true`, the corresponding chaos module automatically disables its sabotage behavior.
+The `bountyManager` tracks current USDT contributions via `fetchOnChainBountyTotals()` and `localStorage`. When `isFixed(id)` evaluates to `true`, the corresponding chaos module automatically disables its sabotage behavior.
 
 Modules are booted on `DOMContentLoaded`. Each is wrapped in a try/catch so
 one broken prank can't take down the whole page. Adding a new module is a

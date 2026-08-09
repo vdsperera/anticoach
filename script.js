@@ -408,6 +408,59 @@ function openDonationModal(id) {
 }
 
 
+/* ---------- ON-CHAIN SMART CONTRACT INTEGRATION ---------- */
+// Smart Contract Address (Deploy AnticoachBounties.sol to Polygon/EVM network and paste address here)
+const ANTICOACH_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+// Smart Contract ABI (Minimal ABI for reading totals and executing donations)
+const ANTICOACH_CONTRACT_ABI = [
+  "function getAllCategoryTotals() external view returns (uint256[11] memory)",
+  "function categoryRaisedUSDT(uint8 categoryId) external view returns (uint256)",
+  "function donateToGoal(uint8 categoryId, uint256 usdtAmount) external"
+];
+
+// Public RPC Nodes for On-Chain Reading (Polygon / BSC / EVM)
+const PUBLIC_RPC_URLS = [
+  "https://polygon-rpc.com",
+  "https://rpc.ankr.com/polygon",
+  "https://bsc-dataseed.binance.org"
+];
+
+async function fetchOnChainBountyTotals() {
+  if (ANTICOACH_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
+    return; // Contract address placeholder — fallback to local/simulated state
+  }
+
+  if (typeof ethers === 'undefined') return;
+
+  for (const rpcUrl of PUBLIC_RPC_URLS) {
+    try {
+      const provider = new ethers.JsonRpcProvider(rpcUrl);
+      const contract = new ethers.Contract(ANTICOACH_CONTRACT_ADDRESS, ANTICOACH_CONTRACT_ABI, provider);
+      const totals = await contract.getAllCategoryTotals();
+
+      bountyConfig.forEach((cfg, idx) => {
+        if (totals[idx] !== undefined) {
+          const usdtVal = parseFloat(ethers.formatUnits(totals[idx], 6));
+          const id = cfg.id;
+          const currentLocal = getFunds(id);
+          if (usdtVal > currentLocal) {
+            const saved = getSavedFunds();
+            saved[id] = usdtVal;
+            saveFunds(saved);
+          }
+        }
+      });
+
+      renderBountyUI();
+      break;
+    } catch (err) {
+      console.warn(`[ANTICOACH] On-chain RPC fetch failed on ${rpcUrl}, trying next...`, err);
+    }
+  }
+}
+
+
 /* ---------- MODULE REGISTRY ---------- */
 const chaosModules = [];
 
@@ -418,6 +471,9 @@ function registerChaos(name, initFn) {
 document.addEventListener('DOMContentLoaded', () => {
   renderBountyUI();
   initDonationModal();
+  fetchOnChainBountyTotals();
+  setInterval(fetchOnChainBountyTotals, 15000); // Poll on-chain state every 15s
+
   const resetBtn = document.getElementById('reset-bounties-btn');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
