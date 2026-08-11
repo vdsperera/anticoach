@@ -1,0 +1,25 @@
+- `[x]` Phase 1: Architecture & Modularity
+  - `[x]` Create `js` directory structure
+  - `[x]` Extract configuration to `js/config.js`
+  - `[x]` Extract state management to `js/store.js`
+  - `[x]` Extract Web3 logic to `js/web3.js`
+  - `[x]` Extract UI rendering to `js/ui.js`
+  - `[x]` Extract 25 chaos modules to `js/chaos/*.js`
+  - `[x]` Update `script.js` to import and initialize
+  - `[x]` Update `index.html` for ES module loading
+  - `[x]` Git commit and push Phase 1
+- `[x]` Phase 2: State Management & DOM Updates
+  - `[x]` Refactor `renderBountyUI` to surgically update DOM nodes
+  - `[x]` Git commit and push Phase 2
+- `[x]` Phase 3: Web3 Integration & Error Handling
+  - `[x]` Move hardcoded addresses to config
+  - `[x]` Fix ERC-20 fallback logic and alert user
+  - `[x]` Git commit and push Phase 3
+- `[x]` Phase 4: Performance & Event Listeners
+  - `[x]` Optimize `reverseScroll` passive listener
+  - `[x]` Add requestAnimationFrame to `invertedCursor`
+  - `[x]` Add Page Visibility API to pause intensive polling
+  - `[x]` Git commit and push Phase 4
+- `[x]` Phase 5: Type Safety & Documentation
+  - `[x]` Add JSDoc types for config and store
+  - `[x]` Git commit and push Phase 5
