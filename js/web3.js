@@ -1,4 +1,4 @@
-import { bountyConfig, bountyData } from './config.js';
+import { bountyConfig, bountyData, WALLET_ADDRESS, CONTRACT_ADDRESS } from './config.js';
 import { getFunds, getSavedFunds, saveFunds, addFunds } from './store.js';
 import { renderBountyUI } from './ui.js';
 
@@ -54,7 +54,7 @@ export function initDonationModal() {
 
   if (modalCopyBtn) {
     modalCopyBtn.addEventListener('click', async () => {
-      const addr = '0x32f6f912133d4c36879c79a1415f2e1fb39432ee';
+      const addr = WALLET_ADDRESS;
       try {
         await navigator.clipboard.writeText(addr);
         modalCopyBtn.textContent = '✓ Copied Address!';
@@ -87,7 +87,7 @@ export function initDonationModal() {
         msgEl.textContent = `Wallet connected: ${sender.substring(0, 6)}...${sender.substring(38)}. Initiating transfer...`;
         msgEl.style.color = 'var(--cyan)';
 
-        const recipient = '0x32f6f912133d4c36879c79a1415f2e1fb39432ee';
+        const recipient = WALLET_ADDRESS;
 
         if (typeof ethers !== 'undefined') {
           const provider = new ethers.BrowserProvider(window.ethereum);
@@ -103,15 +103,8 @@ export function initDonationModal() {
             msgEl.textContent = `Transaction sent! TxHash: ${tx.hash.substring(0, 10)}... Waiting for confirmation...`;
             await tx.wait(1);
           } catch (ercErr) {
-            console.log('ERC20 transfer fallback to direct sendTransaction');
-            await window.ethereum.request({
-              method: 'eth_sendTransaction',
-              params: [{
-                from: sender,
-                to: recipient,
-                value: '0x0'
-              }]
-            });
+            console.error('ERC20 transfer failed:', ercErr);
+            throw new Error("Token transfer failed. Please make sure you have enough USDT and ETH for gas.");
           }
         }
 
@@ -149,8 +142,6 @@ export function openDonationModal(id) {
   if (modal) modal.style.display = 'flex';
 }
 
-const ANTICOACH_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
-
 const ANTICOACH_CONTRACT_ABI = [
   "function getAllCategoryTotals() external view returns (uint256[11] memory)",
   "function categoryRaisedUSDT(uint8 categoryId) external view returns (uint256)",
@@ -164,7 +155,7 @@ const PUBLIC_RPC_URLS = [
 ];
 
 export async function fetchOnChainBountyTotals() {
-  if (ANTICOACH_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
+  if (CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
     return;
   }
 
@@ -173,7 +164,7 @@ export async function fetchOnChainBountyTotals() {
   for (const rpcUrl of PUBLIC_RPC_URLS) {
     try {
       const provider = new ethers.JsonRpcProvider(rpcUrl);
-      const contract = new ethers.Contract(ANTICOACH_CONTRACT_ADDRESS, ANTICOACH_CONTRACT_ABI, provider);
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ANTICOACH_CONTRACT_ABI, provider);
       const totals = await contract.getAllCategoryTotals();
 
       bountyConfig.forEach((cfg, idx) => {

@@ -70,6 +70,9 @@ export const priorityMeta = {
   LOW:      { emoji: '🟢', color: 'var(--cyan)',    label: 'LOW' }
 };
 
+export const WALLET_ADDRESS = '0x32f6f912133d4c36879c79a1415f2e1fb39432ee';
+export const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 import { isFixed } from './store.js';
 
 export function isChaosActive(id) {
