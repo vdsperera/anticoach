@@ -14,11 +14,11 @@ export function renderBountyUI() {
   const solvedCountEl = document.getElementById('bounties-solved-count');
   if (!grid) return;
 
-  grid.innerHTML = '';
+  const isInitialRender = grid.children.length === 0;
   let totalRaised = 0;
   let solvedCount = 0;
 
-  bountyConfig.forEach(cfg => {
+  bountyConfig.forEach((cfg, index) => {
     const id = cfg.id;
     const item = bountyData[id];
     const funds = getFunds(id);
@@ -29,45 +29,70 @@ export function renderBountyUI() {
     const percent = Math.min(100, Math.floor((funds / item.target) * 100));
     const pm = priorityMeta[item.priority] || priorityMeta.LOW;
 
-    const card = document.createElement('div');
-    card.className = `bounty-card ${fixed ? 'fixed' : ''} priority-${item.priority.toLowerCase()}`;
-    card.innerHTML = `
-      <div>
-        <div class="bounty-card-header">
-          <div>
-            <span class="bounty-priority" style="color: ${pm.color}">${pm.emoji} ${pm.label}</span>
-            <h3>${item.lifeIssue}</h3>
+    if (isInitialRender) {
+      const card = document.createElement('div');
+      card.className = `bounty-card ${fixed ? 'fixed' : ''} priority-${item.priority.toLowerCase()}`;
+      card.id = `bounty-card-${id}`;
+      card.innerHTML = `
+        <div>
+          <div class="bounty-card-header">
+            <div>
+              <span class="bounty-priority" style="color: ${pm.color}">${pm.emoji} ${pm.label}</span>
+              <h3>${item.lifeIssue}</h3>
+            </div>
+            <span class="bounty-status ${fixed ? 'repaired' : 'broken'}" id="bounty-status-${id}">
+              ${fixed ? '✓ FIXED' : '⚠ STRUGGLING'}
+            </span>
           </div>
-          <span class="bounty-status ${fixed ? 'repaired' : 'broken'}">
-            ${fixed ? '✓ FIXED' : '⚠ STRUGGLING'}
-          </span>
-        </div>
-        <p class="bounty-desc">${item.lifeDesc}</p>
-        <p class="bounty-bug-label">🔧 Website Bug: <em>${item.title}</em></p>
-      </div>
-
-      <div>
-        <div class="bounty-progress-wrap">
-          <div class="bounty-progress-text">
-            <span>Funding Progress</span>
-            <span>${formatUSDT(funds)} / ${formatUSDT(item.target)} USDT (${percent}%)</span>
-          </div>
-          <div class="bounty-progress-bar">
-            <div class="bounty-progress-fill" style="width: ${percent}%"></div>
-          </div>
+          <p class="bounty-desc">${item.lifeDesc}</p>
+          <p class="bounty-bug-label">🔧 Website Bug: <em>${item.title}</em></p>
         </div>
 
-        <div class="bounty-actions">
-          ${fixed ?
-            `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Life Issue Resolved</button>` :
-            `<button class="btn btn-donate-card" data-donate="${id}">💎 Donate USDT</button>
-             <button class="btn btn-simulate" data-simulate="${id}">+$10 Simulate</button>`
-          }
-        </div>
-      </div>
-    `;
+        <div>
+          <div class="bounty-progress-wrap">
+            <div class="bounty-progress-text">
+              <span>Funding Progress</span>
+              <span id="bounty-progress-text-${id}">${formatUSDT(funds)} / ${formatUSDT(item.target)} USDT (${percent}%)</span>
+            </div>
+            <div class="bounty-progress-bar">
+              <div class="bounty-progress-fill" id="bounty-progress-fill-${id}" style="width: ${percent}%"></div>
+            </div>
+          </div>
 
-    grid.appendChild(card);
+          <div class="bounty-actions" id="bounty-actions-${id}">
+            ${fixed ?
+              `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Life Issue Resolved</button>` :
+              `<button class="btn btn-donate-card" data-donate="${id}">💎 Donate USDT</button>
+               <button class="btn btn-simulate" data-simulate="${id}">+$10 Simulate</button>`
+            }
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    } else {
+      // Update existing DOM
+      const card = document.getElementById(`bounty-card-${id}`);
+      if (card) {
+        card.className = `bounty-card ${fixed ? 'fixed' : ''} priority-${item.priority.toLowerCase()}`;
+        
+        const statusEl = document.getElementById(`bounty-status-${id}`);
+        if (statusEl) {
+          statusEl.className = `bounty-status ${fixed ? 'repaired' : 'broken'}`;
+          statusEl.textContent = fixed ? '✓ FIXED' : '⚠ STRUGGLING';
+        }
+
+        const progTextEl = document.getElementById(`bounty-progress-text-${id}`);
+        if (progTextEl) progTextEl.textContent = `${formatUSDT(funds)} / ${formatUSDT(item.target)} USDT (${percent}%)`;
+
+        const progFillEl = document.getElementById(`bounty-progress-fill-${id}`);
+        if (progFillEl) progFillEl.style.width = `${percent}%`;
+
+        const actionsEl = document.getElementById(`bounty-actions-${id}`);
+        if (actionsEl && fixed && !actionsEl.querySelector('button[disabled]')) {
+           actionsEl.innerHTML = `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Life Issue Resolved</button>`;
+        }
+      }
+    }
   });
 
   if (totalRaisedEl) totalRaisedEl.textContent = `${formatUSDT(totalRaised)} USDT`;
@@ -79,19 +104,19 @@ export function renderBountyUI() {
   if (barActiveCountEl) barActiveCountEl.textContent = `${activeCount}`;
   if (barFixedCountEl) barFixedCountEl.textContent = `${solvedCount}/${bountyConfig.length}`;
 
-  grid.querySelectorAll('[data-donate]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const id = btn.dataset.donate;
-      openDonationModal(id);
+  if (isInitialRender) {
+    grid.addEventListener('click', (e) => {
+      const donateBtn = e.target.closest('[data-donate]');
+      if (donateBtn) {
+        e.preventDefault();
+        openDonationModal(donateBtn.dataset.donate);
+      }
+      
+      const simulateBtn = e.target.closest('[data-simulate]');
+      if (simulateBtn) {
+        e.preventDefault();
+        addFunds(simulateBtn.dataset.simulate, 10);
+      }
     });
-  });
-
-  grid.querySelectorAll('[data-simulate]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const id = btn.dataset.simulate;
-      addFunds(id, 10);
-    });
-  });
+  }
 }
