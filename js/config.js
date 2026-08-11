@@ -1,3 +1,7 @@
+/**
+ * Global toggles to disable specific chaos modules entirely.
+ * @type {Object.<string, boolean>}
+ */
 export const chaosFeatureToggles = {
   invertedCursor: true,
   reverseScroll: true,
@@ -29,6 +33,21 @@ export const chaosFeatureToggles = {
   glitchAudio: true
 };
 
+/**
+ * @typedef {Object} BountyConfigItem
+ * @property {string} id - Unique identifier matching the chaos module.
+ * @property {string} bugTitle - Title of the UI bug.
+ * @property {string} lifeIssue - Title of the real-world issue.
+ * @property {string} lifeDesc - Description of the real-world issue.
+ * @property {'CRITICAL'|'HIGH'|'MEDIUM'|'LOW'} priority - Priority level.
+ * @property {number} targetUSDT - Target amount to raise.
+ * @property {number} initialUSDT - Starting amount.
+ */
+
+/**
+ * Configuration array for all bounties.
+ * @type {BountyConfigItem[]}
+ */
 export const bountyConfig = [
   { id: 'invertedCursor', bugTitle: 'Inverted Mouse Cursor', lifeIssue: 'Family Emergency Fund', lifeDesc: 'Critical family situation requiring emergency financial support. This is the most urgent thing in my life right now.', priority: 'CRITICAL', targetUSDT: 30000, initialUSDT: 0 },
   { id: 'reverseScroll', bugTitle: 'Reverse Page Scroll', lifeIssue: 'Outstanding Debt & Bills', lifeDesc: 'Accumulated debt and overdue bills that keep piling up — just like this page scrolls the wrong way, my finances move backwards.', priority: 'CRITICAL', targetUSDT: 5000, initialUSDT: 0 },
@@ -51,6 +70,20 @@ export const bountyConfig = [
   { id: 'volumeSlider', bugTitle: 'Volume Slider Warps Font', lifeIssue: 'Streaming Subscription Bundle', lifeDesc: 'Small comfort that keeps the volume of life manageable. Netflix, Spotify, the basics.', priority: 'LOW', targetUSDT: 100, initialUSDT: 0 }
 ];
 
+/**
+ * @typedef {Object} BountyDataItem
+ * @property {string} title
+ * @property {string} lifeIssue
+ * @property {string} lifeDesc
+ * @property {string} priority
+ * @property {number} target
+ * @property {number} initial
+ */
+
+/**
+ * Normalized dictionary of bounties keyed by ID.
+ * @type {Object.<string, BountyDataItem>}
+ */
 export const bountyData = {};
 bountyConfig.forEach(item => {
   bountyData[item.id] = {
@@ -63,6 +96,10 @@ bountyConfig.forEach(item => {
   };
 });
 
+/**
+ * Metadata for priorities.
+ * @type {Object.<string, {emoji: string, color: string, label: string}>}
+ */
 export const priorityMeta = {
   CRITICAL: { emoji: '🔴', color: 'var(--magenta)', label: 'CRITICAL' },
   HIGH:     { emoji: '🟡', color: 'var(--yellow)',  label: 'HIGH' },
@@ -75,6 +112,11 @@ export const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 import { isFixed } from './store.js';
 
+/**
+ * Checks if a chaos module should be active.
+ * @param {string} id - The ID of the module (matches bounty ID).
+ * @returns {boolean} True if the module should run.
+ */
 export function isChaosActive(id) {
   if (chaosFeatureToggles[id] === false) return false;
   return !isFixed(id);
