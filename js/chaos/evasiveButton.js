@@ -1,8 +1,9 @@
 import { isChaosActive } from '../config.js';
+import { showLoadingBar } from './fakeLoadingBar.js';
 
 let dodgeOffsets = new WeakMap();
 
-function checkDodge(cx, cy) {
+export function checkDodge(cx, cy) {
   if (!isChaosActive('evasiveButton')) return;
   const dodgeButtons = document.querySelectorAll('.dodge');
   dodgeButtons.forEach(btn => {

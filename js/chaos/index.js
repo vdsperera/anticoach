@@ -16,6 +16,15 @@ import { init as init_countUpTimer } from './countUpTimer.js';
 import { init as init_volumeSlider } from './volumeSlider.js';
 import { init as init_ghostBackspace } from './ghostBackspace.js';
 import { init as init_glitchAudio } from './glitchAudio.js';
+import { init as init_fakeLoadingBar } from './fakeLoadingBar.js';
+import { init as init_dragSnapback } from './dragSnapback.js';
+import { init as init_pageShake } from './pageShake.js';
+import { init as init_upsideDownScroll } from './upsideDownScroll.js';
+import { init as init_modalHydra } from './modalHydra.js';
+import { init as init_uiGravity } from './uiGravity.js';
+import { init as init_fontScramble } from './fontScramble.js';
+import { init as init_customContextMenu } from './customContextMenu.js';
+import { init as init_focusDrift } from './focusDrift.js';
 
 export const chaosModules = [
   { name: 'invertedCursor', init: init_invertedCursor },
@@ -35,4 +44,13 @@ export const chaosModules = [
   { name: 'volumeSlider', init: init_volumeSlider },
   { name: 'ghostBackspace', init: init_ghostBackspace },
   { name: 'glitchAudio', init: init_glitchAudio },
+  { name: 'fakeLoadingBar', init: init_fakeLoadingBar },
+  { name: 'dragSnapback', init: init_dragSnapback },
+  { name: 'pageShake', init: init_pageShake },
+  { name: 'upsideDownScroll', init: init_upsideDownScroll },
+  { name: 'modalHydra', init: init_modalHydra },
+  { name: 'uiGravity', init: init_uiGravity },
+  { name: 'fontScramble', init: init_fontScramble },
+  { name: 'customContextMenu', init: init_customContextMenu },
+  { name: 'focusDrift', init: init_focusDrift }
 ];
