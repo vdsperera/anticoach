@@ -7,7 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
   renderBountyUI();
   initDonationModal();
   fetchOnChainBountyTotals();
-  setInterval(fetchOnChainBountyTotals, 15000);
+  
+  let fetchInterval = setInterval(fetchOnChainBountyTotals, 15000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      clearInterval(fetchInterval);
+    } else {
+      fetchOnChainBountyTotals();
+      fetchInterval = setInterval(fetchOnChainBountyTotals, 15000);
+    }
+  });
 
   const scrollToBounties = (e) => {
     e.preventDefault();

@@ -1,4 +1,5 @@
 import { isChaosActive } from '../config.js';
+import { checkDodge } from './evasiveButton.js';
 
 export function init() {
   const fakeCursor = document.getElementById('fake-cursor');
@@ -6,32 +7,39 @@ export function init() {
   let fx = window.innerWidth / 2;
   let fy = window.innerHeight / 2;
   let lastX = null, lastY = null;
+  let ticking = false;
 
   fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
 
   document.addEventListener('mousemove', (e) => {
-    if (!isChaosActive('invertedCursor')) {
-      fx = e.clientX;
-      fy = e.clientY;
-      fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
-      return;
+    if (!ticking) {
+      const { clientX, clientY } = e;
+      requestAnimationFrame(() => {
+        if (!isChaosActive('invertedCursor')) {
+          fx = clientX;
+          fy = clientY;
+          fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
+        } else {
+          if (lastX === null) { lastX = clientX; lastY = clientY; }
+          else {
+            const dx = clientX - lastX;
+            const dy = clientY - lastY;
+            lastX = clientX; lastY = clientY;
+
+            fx -= dx;
+            fy -= dy;
+
+            fx = Math.max(0, Math.min(window.innerWidth, fx));
+            fy = Math.max(0, Math.min(window.innerHeight, fy));
+
+            fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
+            checkDodge(fx, fy);
+          }
+        }
+        ticking = false;
+      });
+      ticking = true;
     }
-
-    if (lastX === null) { lastX = e.clientX; lastY = e.clientY; return; }
-
-    const dx = e.clientX - lastX;
-    const dy = e.clientY - lastY;
-    lastX = e.clientX; lastY = e.clientY;
-
-    fx -= dx;
-    fy -= dy;
-
-    fx = Math.max(0, Math.min(window.innerWidth, fx));
-    fy = Math.max(0, Math.min(window.innerHeight, fy));
-
-    fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
-
-    checkDodge(fx, fy);
   });
 
   let isSynthesizing = false;
