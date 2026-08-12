@@ -30,7 +30,7 @@ export const chaosFeatureToggles = {
   customContextMenu: true,
   focusDrift: true,
   ghostBackspace: true,
-  glitchAudio: true,
+  glitchAudio: false,
   reverseAudio: true
 };
 
@@ -104,9 +104,9 @@ bountyConfig.forEach(item => {
  */
 export const priorityMeta = {
   CRITICAL: { emoji: '🔴', color: 'var(--magenta)', label: 'CRITICAL' },
-  HIGH:     { emoji: '🟡', color: 'var(--yellow)',  label: 'HIGH' },
-  MEDIUM:   { emoji: '🟡', color: 'var(--yellow)',  label: 'MEDIUM' },
-  LOW:      { emoji: '🟢', color: 'var(--cyan)',    label: 'LOW' }
+  HIGH: { emoji: '🟡', color: 'var(--yellow)', label: 'HIGH' },
+  MEDIUM: { emoji: '🟡', color: 'var(--yellow)', label: 'MEDIUM' },
+  LOW: { emoji: '🟢', color: 'var(--cyan)', label: 'LOW' }
 };
 
 export const WALLET_ADDRESS = '0x32f6f912133d4c36879c79a1415f2e1fb39432ee';

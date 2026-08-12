@@ -6,6 +6,7 @@ let gainNode = null;
 let isStarted = false;
 let isMuted = false;
 let audioBuffers = null; // { forward: AudioBuffer, reversed: AudioBuffer }
+let lastActiveState = null;
 
 const SONG_URLS = [
   './audio/bad_boys.mp3',
@@ -41,7 +42,7 @@ async function loadSongBuffers(ctx) {
     }
   }
 
-  // Fallback to Web Audio synthesized Bad Boys theme
+  // Pure clean fallback synth if external file is missing
   return createSynthFallbackBuffers(ctx);
 }
 
@@ -98,11 +99,7 @@ function createSynthFallbackBuffers(ctx) {
       valBass = (Math.sin(2 * Math.PI * bFreq * t) * 0.7 + Math.sin(4 * Math.PI * bFreq * t) * 0.3) * bEnv;
     }
 
-    const isRimshot = (step % 4 === 2);
-    const rimEnv = isRimshot ? Math.exp(-stepPhase * 18) : 0;
-    const valPerc = (Math.random() * 2 - 1) * rimEnv * 0.2;
-
-    const mix = (valMelody * 0.45 + valBass * 0.45 + valSkank * 0.3 + valPerc) * 0.3;
+    const mix = (valMelody * 0.5 + valBass * 0.5 + valSkank * 0.3) * 0.3;
     left[i] = mix;
     right[i] = mix;
   }
@@ -129,28 +126,27 @@ async function startBGM() {
     audioBuffers = await loadSongBuffers(audioCtx);
     playLoop();
     isStarted = true;
-
-    setInterval(() => {
-      if (!isStarted || !audioCtx) return;
-      playLoop();
-    }, 12000);
   } catch (e) {
     console.warn('[ANTICOACH] Reverse BGM Web Audio error:', e);
   }
 }
 
-function playLoop() {
+function playLoop(force = false) {
   if (!audioCtx || !audioBuffers) return;
+
+  const active = isChaosActive('reverseAudio');
+  if (!force && lastActiveState === active) return;
+  lastActiveState = active;
+
   if (sourceNode) {
     try { sourceNode.stop(); } catch (e) {}
   }
 
-  const active = isChaosActive('reverseAudio');
   const activeBuffer = active ? audioBuffers.reversed : audioBuffers.forward;
 
   sourceNode = audioCtx.createBufferSource();
   sourceNode.buffer = activeBuffer;
-  sourceNode.loop = true;
+  sourceNode.loop = true; // Seamless, continuous gapless looping!
   sourceNode.connect(gainNode);
   sourceNode.start(0);
 
@@ -165,6 +161,12 @@ function updateBtnLabel() {
     btn.textContent = '🔇 BGM: Muted';
   } else {
     btn.textContent = active ? '🎵 Reversed "Bad Boys" Song' : '🎵 "Bad Boys" Song (Fixed)';
+  }
+}
+
+export function checkAudioModeChange() {
+  if (isStarted) {
+    playLoop();
   }
 }
 
