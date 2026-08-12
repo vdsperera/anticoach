@@ -25,6 +25,7 @@ import { init as init_uiGravity } from './uiGravity.js';
 import { init as init_fontScramble } from './fontScramble.js';
 import { init as init_customContextMenu } from './customContextMenu.js';
 import { init as init_focusDrift } from './focusDrift.js';
+import { init as init_reverseAudio } from './reverseAudio.js';
 
 export const chaosModules = [
   { name: 'invertedCursor', init: init_invertedCursor },
@@ -52,5 +53,6 @@ export const chaosModules = [
   { name: 'uiGravity', init: init_uiGravity },
   { name: 'fontScramble', init: init_fontScramble },
   { name: 'customContextMenu', init: init_customContextMenu },
-  { name: 'focusDrift', init: init_focusDrift }
+  { name: 'focusDrift', init: init_focusDrift },
+  { name: 'reverseAudio', init: init_reverseAudio }
 ];
