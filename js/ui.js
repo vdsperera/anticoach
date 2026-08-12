@@ -38,14 +38,17 @@ export function renderBountyUI() {
           <div class="bounty-card-header">
             <div>
               <span class="bounty-priority" style="color: ${pm.color}">${pm.emoji} ${pm.label}</span>
-              <h3>${item.lifeIssue}</h3>
+              <h3>🔧 ${item.title}</h3>
             </div>
             <span class="bounty-status ${fixed ? 'repaired' : 'broken'}" id="bounty-status-${id}">
-              ${fixed ? '✓ FIXED' : '⚠ STRUGGLING'}
+              ${fixed ? '✓ BUG FIXED' : '⚠ BUG ACTIVE'}
             </span>
           </div>
-          <p class="bounty-desc">${item.lifeDesc}</p>
-          <p class="bounty-bug-label">🔧 Website Bug: <em>${item.title}</em></p>
+          
+          <div class="bounty-life-struggle">
+            <p class="bounty-life-title">💔 <strong>Real-Life Cause:</strong> ${item.lifeIssue}</p>
+            <p class="bounty-desc">${item.lifeDesc}</p>
+          </div>
         </div>
 
         <div>
@@ -61,8 +64,8 @@ export function renderBountyUI() {
 
           <div class="bounty-actions" id="bounty-actions-${id}">
             ${fixed ?
-              `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Life Issue Resolved</button>` :
-              `<button class="btn btn-donate-card" data-donate="${id}">💎 Donate USDT</button>
+              `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Bug & Life Issue Fixed</button>` :
+              `<button class="btn btn-donate-card" data-donate="${id}">💎 Fix Bug with USDT</button>
                <button class="btn btn-simulate" data-simulate="${id}">+$10 Simulate</button>`
             }
           </div>
@@ -78,7 +81,7 @@ export function renderBountyUI() {
         const statusEl = document.getElementById(`bounty-status-${id}`);
         if (statusEl) {
           statusEl.className = `bounty-status ${fixed ? 'repaired' : 'broken'}`;
-          statusEl.textContent = fixed ? '✓ FIXED' : '⚠ STRUGGLING';
+          statusEl.textContent = fixed ? '✓ BUG FIXED' : '⚠ BUG ACTIVE';
         }
 
         const progTextEl = document.getElementById(`bounty-progress-text-${id}`);
@@ -89,7 +92,7 @@ export function renderBountyUI() {
 
         const actionsEl = document.getElementById(`bounty-actions-${id}`);
         if (actionsEl && fixed && !actionsEl.querySelector('button[disabled]')) {
-           actionsEl.innerHTML = `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Life Issue Resolved</button>`;
+           actionsEl.innerHTML = `<button class="btn btn-simulate" style="opacity: 0.6; cursor: default;" disabled>✓ Bug & Life Issue Fixed</button>`;
         }
       }
     }

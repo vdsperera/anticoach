@@ -134,9 +134,9 @@ export function openDonationModal(id) {
   const descEl = document.getElementById('donation-modal-desc');
   const msgEl = document.getElementById('donation-msg');
 
-  if (priorityEl) priorityEl.textContent = `/// ${item.priority}`;
-  if (titleEl) titleEl.textContent = `Donate to Fix: ${item.lifeIssue}`;
-  if (descEl) descEl.textContent = item.lifeDesc;
+  if (priorityEl) priorityEl.textContent = `/// ${item.priority} PRIORITY`;
+  if (titleEl) titleEl.textContent = `Fix Website Bug: ${item.title}`;
+  if (descEl) descEl.innerHTML = `<strong style="color:var(--yellow); display:block; margin-bottom:4px;">💔 Real-Life Cause: ${item.lifeIssue}</strong>${item.lifeDesc}`;
   if (msgEl) msgEl.textContent = '';
 
   if (modal) modal.style.display = 'flex';
