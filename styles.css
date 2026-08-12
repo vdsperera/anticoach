@@ -1099,8 +1099,7 @@ body.ultra-dark header{
   box-shadow: 0 0 24px rgba(255,46,136,0.6);
 }
 
-/* ============ UPSIDE-DOWN SCROLL COUNTER-ROTATION ============ */
-body.upside-down #bounties,
+/* ============ UPSIDE-DOWN SCROLL COUNTER-ROTATION FOR MODALS ============ */
 body.upside-down .modal-backdrop {
   transform: rotate(180deg);
   transition: transform 0.3s ease;
