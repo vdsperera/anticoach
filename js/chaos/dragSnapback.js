@@ -1,7 +1,6 @@
 import { isChaosActive } from '../config.js';
 
 export function init() {
-
   const tooltips = [
     "you can't rearrange your priorities here.",
     "nice try. everything stays broken.",
@@ -19,6 +18,7 @@ export function init() {
     let startX, startY, isDragging = false;
 
     card.addEventListener('mousedown', (e) => {
+      if (!isChaosActive('dragSnapback')) return;
       isDragging = true;
       startX = e.clientX;
       startY = e.clientY;
@@ -47,5 +47,4 @@ export function init() {
 
     card.addEventListener('dragstart', (e) => e.preventDefault());
   });
-
 }

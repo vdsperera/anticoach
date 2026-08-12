@@ -18,25 +18,5 @@ export function init() {
   }
 
   scheduleNext();
-});
-
-
-/* ============================================================
-   13. PAGE SHAKE / TREMOR
-============================================================ */
-registerChaos('pageShake', () => {
-  function shake() {
-    document.body.classList.add('shaking');
-    setTimeout(() => document.body.classList.remove('shaking'), 250);
-  }
-
-  function scheduleNext() {
-    const delay = (Math.random() * 20000) + 20000;
-    setTimeout(() => {
-      shake();
-      scheduleNext();
-    }, delay);
-  }
-
-  scheduleNext();
 }
+

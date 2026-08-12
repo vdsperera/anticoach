@@ -3,48 +3,50 @@ import { checkDodge } from './evasiveButton.js';
 
 export function init() {
   const fakeCursor = document.getElementById('fake-cursor');
+  if (!fakeCursor) return;
 
   let fx = window.innerWidth / 2;
   let fy = window.innerHeight / 2;
   let lastX = null, lastY = null;
-  let ticking = false;
 
   fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
 
   document.addEventListener('mousemove', (e) => {
-    if (!ticking) {
-      const { clientX, clientY } = e;
-      requestAnimationFrame(() => {
-        if (!isChaosActive('invertedCursor')) {
-          fx = clientX;
-          fy = clientY;
-          fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
-        } else {
-          if (lastX === null) { lastX = clientX; lastY = clientY; }
-          else {
-            const dx = clientX - lastX;
-            const dy = clientY - lastY;
-            lastX = clientX; lastY = clientY;
+    const { clientX, clientY } = e;
 
-            fx -= dx;
-            fy -= dy;
+    if (!isChaosActive('invertedCursor')) {
+      fx = clientX;
+      fy = clientY;
+      fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
+      lastX = clientX;
+      lastY = clientY;
+      return;
+    }
 
-            fx = Math.max(0, Math.min(window.innerWidth, fx));
-            fy = Math.max(0, Math.min(window.innerHeight, fy));
+    if (lastX === null) {
+      lastX = clientX;
+      lastY = clientY;
+    } else {
+      const dx = clientX - lastX;
+      const dy = clientY - lastY;
+      lastX = clientX;
+      lastY = clientY;
 
-            fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
-            checkDodge(fx, fy);
-          }
-        }
-        ticking = false;
-      });
-      ticking = true;
+      fx -= dx;
+      fy -= dy;
+
+      fx = Math.max(0, Math.min(window.innerWidth, fx));
+      fy = Math.max(0, Math.min(window.innerHeight, fy));
+
+      fakeCursor.style.transform = `translate(${fx}px, ${fy}px) translate(-50%,-50%)`;
+      checkDodge(fx, fy);
     }
   });
 
   let isSynthesizing = false;
 
   document.addEventListener('mousedown', (e) => {
+    if (!isChaosActive('invertedCursor')) return;
     if (isSynthesizing) return;
     e.preventDefault();
     e.stopPropagation();
@@ -65,6 +67,7 @@ export function init() {
   }, true);
 
   document.addEventListener('mouseup', (e) => {
+    if (!isChaosActive('invertedCursor')) return;
     if (isSynthesizing) return;
     e.preventDefault();
     e.stopPropagation();
@@ -85,6 +88,7 @@ export function init() {
   }, true);
 
   document.addEventListener('click', (e) => {
+    if (!isChaosActive('invertedCursor')) return;
     if (isSynthesizing) return;
     e.preventDefault();
     e.stopPropagation();

@@ -2,7 +2,8 @@ import { isChaosActive } from '../config.js';
 
 let modalCount = 0;
 
-function openModal() {
+export function openModal() {
+  if (!isChaosActive('modalMultiply')) return;
   if (modalCount >= 3) { modalCount = 0; return; }
   modalCount++;
   const backdrop = document.createElement('div');

@@ -29,14 +29,16 @@ html,body{
   font-family:var(--font-body);
   font-size:var(--font-size-base);
   overflow-x:hidden;
-  cursor:none;
   min-height:100%;
   transition: background 0.4s, color 0.4s;
 }
 
-a{color:inherit;}
+a{color:inherit; cursor:pointer;}
 
-/* ============ CUSTOM CURSOR (inverted) ============ */
+*, *::before, *::after {
+  cursor: none !important;
+}
+
 #fake-cursor{
   position:fixed;
   top:0; left:0;
@@ -45,6 +47,7 @@ a{color:inherit;}
   z-index:9999;
   transform:translate(-50%,-50%);
   mix-blend-mode:screen;
+  display:block;
 }
 #fake-cursor svg{ width:100%; height:100%; display:block; }
 #fake-cursor .label{
@@ -158,7 +161,7 @@ nav a:hover{
   border:1px solid var(--line);
   background:transparent;
   color:var(--muted);
-  cursor:none;
+  cursor:pointer;
   transition:color .2s, border-color .2s, background .2s;
   white-space:nowrap;
 }
@@ -221,7 +224,7 @@ p{
   color:var(--ink);
   padding:13px 26px;
   border-radius:999px;
-  cursor:none;
+  cursor:pointer;
   display:inline-block;
   position:relative;
   transition:transform .12s ease;
@@ -315,7 +318,6 @@ input, textarea{
   border-radius:8px;
   font-family:var(--font-body);
   font-size:14px;
-  cursor:none;
 }
 textarea{ resize:none; height:80px; }
 .consent{
@@ -352,7 +354,7 @@ textarea{ resize:none; height:80px; }
   border:1px solid var(--line);
   border-radius:999px;
   outline:none;
-  cursor:none;
+  cursor:pointer;
 }
 .volume-slider::-webkit-slider-thumb{
   -webkit-appearance:none;
@@ -363,7 +365,7 @@ textarea{ resize:none; height:80px; }
   background:var(--cyan);
   border:2px solid var(--void);
   box-shadow:0 0 10px var(--cyan);
-  cursor:none;
+  cursor:pointer;
 }
 .volume-slider::-moz-range-thumb{
   width:18px;
@@ -372,7 +374,7 @@ textarea{ resize:none; height:80px; }
   background:var(--cyan);
   border:2px solid var(--void);
   box-shadow:0 0 10px var(--cyan);
-  cursor:none;
+  cursor:pointer;
 }
 .volume-value{
   font-family:var(--font-display);
@@ -918,7 +920,7 @@ body.ultra-dark header{
   color: var(--muted);
   font-size: 24px;
   line-height: 1;
-  cursor: none;
+  cursor: pointer;
   transition: color 0.2s;
 }
 .modal-close-btn:hover {
@@ -944,7 +946,7 @@ body.ultra-dark header{
   border: 1px solid var(--line);
   background: var(--void);
   color: var(--ink);
-  cursor: none;
+  cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
@@ -994,7 +996,7 @@ body.ultra-dark header{
 .custom-menu-item {
   padding: 8px 14px;
   color: var(--ink);
-  cursor: none;
+  cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 .custom-menu-item:hover {

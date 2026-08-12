@@ -27,6 +27,10 @@ export function checkDodge(cx, cy) {
 }
 
 export function init() {
+  document.addEventListener('mousemove', (e) => {
+    checkDodge(e.clientX, e.clientY);
+  });
+
   setInterval(() => {
     document.querySelectorAll('.dodge').forEach(btn => {
       if (!isChaosActive('evasiveButton')) {
@@ -41,7 +45,10 @@ export function init() {
     });
   }, 300);
 
-  document.getElementById('cta-start').addEventListener('click', () => {
-    showLoadingBar();
-  });
+  const ctaBtn = document.getElementById('cta-start');
+  if (ctaBtn) {
+    ctaBtn.addEventListener('click', () => {
+      showLoadingBar();
+    });
+  }
 }
