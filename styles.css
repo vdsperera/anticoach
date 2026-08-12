@@ -28,7 +28,7 @@ html,body{
   color:var(--ink);
   font-family:var(--font-body);
   font-size:var(--font-size-base);
-  overflow-x:hidden;
+  overflow-x:auto;
   min-height:100%;
   transition: background 0.4s, color 0.4s;
 }
