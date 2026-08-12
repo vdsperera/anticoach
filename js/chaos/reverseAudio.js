@@ -4,6 +4,7 @@ let audioCtx = null;
 let sourceNode = null;
 let gainNode = null;
 let isStarted = false;
+let isMuted = false;
 
 function createAudioBuffers(ctx) {
   const sampleRate = ctx.sampleRate;
@@ -50,34 +51,21 @@ function createAudioBuffers(ctx) {
   return { forward: buffer, reversed: reversedBuffer };
 }
 
+let cachedBuffers = null;
+
 function startBGM() {
   if (isStarted) return;
   try {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const buffers = createAudioBuffers(audioCtx);
+    cachedBuffers = createAudioBuffers(audioCtx);
     gainNode = audioCtx.createGain();
-    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(isMuted ? 0 : 0.18, audioCtx.currentTime);
     gainNode.connect(audioCtx.destination);
-
-    function playLoop() {
-      if (sourceNode) {
-        try { sourceNode.stop(); } catch (e) {}
-      }
-
-      const active = isChaosActive('reverseAudio');
-      const activeBuffer = active ? buffers.reversed : buffers.forward;
-
-      sourceNode = audioCtx.createBufferSource();
-      sourceNode.buffer = activeBuffer;
-      sourceNode.loop = true;
-      sourceNode.connect(gainNode);
-      sourceNode.start(0);
-    }
 
     playLoop();
     isStarted = true;
 
-    // Check periodically if fixed state changes to switch audio mode
+    // Periodically re-sync loop mode when bounty status changes
     setInterval(() => {
       if (!isStarted || !audioCtx) return;
       playLoop();
@@ -87,7 +75,38 @@ function startBGM() {
   }
 }
 
+function playLoop() {
+  if (!audioCtx || !cachedBuffers) return;
+  if (sourceNode) {
+    try { sourceNode.stop(); } catch (e) {}
+  }
+
+  const active = isChaosActive('reverseAudio');
+  const activeBuffer = active ? cachedBuffers.reversed : cachedBuffers.forward;
+
+  sourceNode = audioCtx.createBufferSource();
+  sourceNode.buffer = activeBuffer;
+  sourceNode.loop = true;
+  sourceNode.connect(gainNode);
+  sourceNode.start(0);
+
+  updateBtnLabel();
+}
+
+function updateBtnLabel() {
+  const btn = document.getElementById('bgm-toggle');
+  if (!btn) return;
+  const active = isChaosActive('reverseAudio');
+  if (isMuted) {
+    btn.textContent = '🔇 BGM: Muted';
+  } else {
+    btn.textContent = active ? '🎵 BGM: Reverse Audio' : '🎵 BGM: Forward Audio';
+  }
+}
+
 export function init() {
+  const btn = document.getElementById('bgm-toggle');
+
   const triggerAudio = () => {
     if (audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume();
@@ -98,4 +117,18 @@ export function init() {
   ['click', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
     document.addEventListener(evt, triggerAudio, { once: true });
   });
+
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerAudio();
+      isMuted = !isMuted;
+      if (gainNode) {
+        gainNode.gain.setValueAtTime(isMuted ? 0 : 0.18, audioCtx.currentTime);
+      }
+      updateBtnLabel();
+    });
+  }
+
+  updateBtnLabel();
 }

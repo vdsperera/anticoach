@@ -151,6 +151,25 @@ nav a:hover{
   background:var(--yellow);
 }
 
+/* BGM toggle button in nav */
+#bgm-toggle {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--cyan);
+  cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+  white-space: nowrap;
+}
+#bgm-toggle:hover {
+  color: var(--magenta);
+  border-color: var(--magenta);
+}
+
 /* Dark mode toggle button in nav */
 #dark-toggle{
   font-family:var(--font-display);
